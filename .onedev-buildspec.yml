@@ -27,7 +27,7 @@ jobs:
     image: git
     interpreter: !DefaultInterpreter
       commands:
-      - git -c http.proxy=@property:proxy_url@ -c https.proxy=@property:proxy_url@ push --force https://txgde-space:@secret:github_token@@@github.com/txgde-space/shell-style-personal-page.git
+      - git -c http.proxy=@property:proxy_url@ -c https.proxy=@property:proxy_url@ push --force https://txgde-space:@secret:github_token@@@github.com/txgde-space/txgde_space_blog.git
     useTTY: false
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   triggers:
