@@ -32,9 +32,9 @@ jobs:
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   triggers:
   - !BranchUpdateTrigger
-    branches: master
+    branches: main
     paths: -.onedev-buildspec.yml
-    projects: shell-style-personal-page
+    projects: txgde_space_blog
   retryCondition: never
   maxRetries: 3
   retryDelay: 30
