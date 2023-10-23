@@ -1132,14 +1132,14 @@
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="https://blogcdn.txg2333.top/wp-content/uploads/2021/09/image.png"
+                     data-src="https://image.txg2333.top/2021/09/image.png"
                       alt="001"
                 ></p>
 <p>发现可以访问phpinfo.php,因为可以通过GET请求控制<code>include($page)</code>这个语句的执行内容,因此猜想可以通过伪协议来执行php语句,前往phpinfo.php页面查看是否满足条件:</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="https://blogcdn.txg2333.top/wp-content/uploads/2021/09/image-1-1024x245.png"
+                     data-src="https://image.txg2333.top/2021/09/image-1-1024x245.png"
                       alt="002"
                 ></p>
 <p>发现<code>allow_url_fopen</code>与 <code>allow_url_ include</code>的值都为on,满足伪协议的条件。</p>
@@ -1151,14 +1151,14 @@
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="https://blogcdn.txg2333.top/wp-content/uploads/2021/09/image-2.png"
+                     data-src="https://image.txg2333.top/2021/09/image-2.png"
                       alt="003"
                 ></p>
 <p>发现fl4gisisish3r3.php文件,再次构造<code>?page=data://text/plain,&lt;?php show_source(&quot;fl4gisisish3r3.php&quot;)?&gt;</code>输出该文件的源码</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="https://blogcdn.txg2333.top/wp-content/uploads/2021/09/image-3-1024x595.png"
+                     data-src="https://image.txg2333.top/2021/09/image-3-1024x595.png"
                       alt="004"
                 ></p>
 <p>得到flag(注意:若使用cat fl4gisisish3r3.php的方式查看flag需要在网页源代码里才能看到,页面不直接显示)</p>
