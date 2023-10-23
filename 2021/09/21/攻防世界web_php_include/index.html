@@ -24,19 +24,19 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="题目来源:攻防世界&gt;&gt;答题&gt;&gt;Web&gt;&gt;高手进阶区&gt;&gt;Web_php_include  前置知识:PHP include()与php伪协议: PHP伪协议总结 - SegmentFault 思否  PHP strstr(): strstr(string $haystack, [mixed](https:&#x2F;&#x2F;www.php.net&#x2F;manual&#x2F;zh&#x2F;">
+        <meta name="description" content="题目来源:攻防世界&gt;&gt;答题&gt;&gt;Web&gt;&gt;高手进阶区&gt;&gt;Web_php_include  前置知识:PHP include()与php伪协议: PHP伪协议总结 - SegmentFault 思否  PHP strstr(): strstr(string $haystack, mixed  $needle, bool $before_needle &amp;#">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[攻防世界]Web_php_include">
 <meta property="og:url" content="http://blog.txgde.space/2021/09/21/%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8Cweb_php_include/index.html">
 <meta property="og:site_name" content="童旭光的博客">
-<meta property="og:description" content="题目来源:攻防世界&gt;&gt;答题&gt;&gt;Web&gt;&gt;高手进阶区&gt;&gt;Web_php_include  前置知识:PHP include()与php伪协议: PHP伪协议总结 - SegmentFault 思否  PHP strstr(): strstr(string $haystack, [mixed](https:&#x2F;&#x2F;www.php.net&#x2F;manual&#x2F;zh&#x2F;">
+<meta property="og:description" content="题目来源:攻防世界&gt;&gt;答题&gt;&gt;Web&gt;&gt;高手进阶区&gt;&gt;Web_php_include  前置知识:PHP include()与php伪协议: PHP伪协议总结 - SegmentFault 思否  PHP strstr(): strstr(string $haystack, mixed  $needle, bool $before_needle &amp;#">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://image.txg2333.top/2021/09/image.png">
 <meta property="og:image" content="https://image.txg2333.top/2021/09/image-1-1024x245.png">
 <meta property="og:image" content="https://image.txg2333.top/2021/09/image-2.png">
 <meta property="og:image" content="https://image.txg2333.top/2021/09/image-3-1024x595.png">
 <meta property="article:published_time" content="2021-09-21T15:34:17.000Z">
-<meta property="article:modified_time" content="2023-10-23T07:27:07.692Z">
+<meta property="article:modified_time" content="2023-10-23T08:53:51.197Z">
 <meta property="article:author" content="Thou">
 <meta property="article:tag" content="CTF">
 <meta property="article:tag" content="Web">
@@ -300,8 +300,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-23 15:27:07</span>
-            <span class="mobile">2023-10-23 15:27:07</span>
+            <span class="desktop">2023-10-23 16:53:51</span>
+            <span class="mobile">2023-10-23 16:53:51</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -377,7 +377,7 @@
         <div class="article-content markdown-body">
             <h2 id="题目来源"><a href="#题目来源" class="headerlink" title="题目来源:"></a><strong>题目来源:</strong></h2><p><a class="link"   target="_blank" rel="noopener" href="https://adworld.xctf.org.cn/task/answer?type=web&number=3&grade=1&id=5415&page=1" >攻防世界&gt;&gt;答题&gt;&gt;Web&gt;&gt;高手进阶区&gt;&gt;Web_php_include <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 <h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识:"></a><strong>前置知识:</strong></h2><p>PHP include()与php伪协议: <a class="link"   target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000018991087" >PHP伪协议总结 - SegmentFault 思否 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p>PHP strstr(): <code>strstr(string $haystack, [mixed](https://www.php.net/manual/zh/language.types.declarations.php#language.types.declarations.mixed) $needle, bool $before_needle = false)</code>查找$needle在$haystack中的首次出现,返回值为字符串或0(未查找到结果)。 [su_highlight]注意该函数区分大小写[&#x2F;su_highlight] 。 <a class="link"   target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.strstr.php" >详细文档&gt;&gt; <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>PHP strstr(): strstr(string $haystack, <a class="link"   target="_blank" rel="noopener" href="https://www.php.net/manual/zh/language.types.declarations.php#language.types.declarations.mixed" >mixed <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> $needle, bool $before_needle &#x3D; false)&#96;查找$needle在$haystack中的首次出现,返回值为字符串或0(未查找到结果)。 [su_highlight]注意该函数区分大小写[&#x2F;su_highlight] 。 <a class="link"   target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.strstr.php" >详细文档&gt;&gt; <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 <p>PHP str_replace(): 字符串替换。<a class="link"   target="_blank" rel="noopener" href="https://www.php.net/manual/zh/function.str-replace.php" >详细文档&gt;&gt; <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 <h2 id="WriteUp"><a href="#WriteUp" class="headerlink" title="WriteUp:"></a><strong>WriteUp:</strong></h2><p>打开链接访问网页,发现显示以下代码:</p>
 <div class="highlight-container" data-rel="Php"><figure class="iseeu highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">show_source</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="variable">$_GET</span>[<span class="string">&#x27;hello&#x27;</span>];</span><br><span class="line"><span class="variable">$page</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;page&#x27;</span>];</span><br><span class="line"><span class="keyword">while</span> (<span class="title function_ invoke__">strstr</span>(<span class="variable">$page</span>, <span class="string">&quot;php://&quot;</span>)) &#123;</span><br><span class="line">    <span class="variable">$page</span>=<span class="title function_ invoke__">str_replace</span>(<span class="string">&quot;php://&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="variable">$page</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">include</span>(<span class="variable">$page</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></div>
@@ -434,7 +434,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-23 15:27:07
+                    :</strong> 2023-10-23 16:53:51
             </li>
         
         <li>
