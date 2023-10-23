@@ -31,21 +31,21 @@
 <meta property="og:site_name" content="童旭光的博客">
 <meta property="og:description" content="一、欠拟合与过拟合1、定义欠拟合：模型在训练集上误差很高 过拟合：在训练集上误差低，测试集上误差高 2、原因欠拟合：模型过于简单，没有很好的捕捉到数据特征，不能很好的拟合数据 过拟合：模型把数据学习的太彻底，以至于把噪声数据的特征也学习到了，这样就会导致在后期测试的时候不能够很好地识别数据，模型泛化能力太差 3、图例  二、偏差与方差1、定义偏差：预计值的期望与真实值之间的差距 方差：预测值的离散">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022202987.jpg">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022203809.jpg">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022206209.jpg">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022209619.png">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022211113.png">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022212523.png">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022212889.png">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022218334.png">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022219812.png">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022219579.png">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022217729.png">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022217885.png">
-<meta property="og:image" content="http://image.txg2333.top/2022/02/202202022221992.png">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022202987.jpg">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022203809.jpg">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022206209.jpg">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022209619.png">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022211113.png">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022212523.png">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022212889.png">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022218334.png">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022219812.png">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022219579.png">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022217729.png">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022217885.png">
+<meta property="og:image" content="https://image.txg2333.top/2022/02/202202022221992.png">
 <meta property="article:published_time" content="2022-02-01T13:15:52.000Z">
-<meta property="article:modified_time" content="2022-12-13T07:49:25.799Z">
+<meta property="article:modified_time" content="2023-10-23T07:03:07.120Z">
 <meta property="article:author" content="Thou">
 <meta property="article:tag" content="F1Score">
 <meta property="article:tag" content="MAE">
@@ -61,7 +61,7 @@
 <meta property="article:tag" content="精准率">
 <meta property="article:tag" content="过拟合">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://image.txg2333.top/2022/02/202202022202987.jpg">
+<meta name="twitter:image" content="https://image.txg2333.top/2022/02/202202022202987.jpg">
     
     
     <!--- Icon Part-->
@@ -316,12 +316,28 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2022-12-13 15:49:25</span>
-            <span class="mobile">2022-12-13 15:49:25</span>
+            <span class="desktop">2023-10-23 15:03:07</span>
+            <span class="mobile">2023-10-23 15:03:07</span>
             <span class="hover-info">更新</span>
         </span>
     
 
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
     
     
         <span class="article-tags article-meta-item">
@@ -410,13 +426,13 @@
 <h3 id="3、图例"><a href="#3、图例" class="headerlink" title="3、图例"></a>3、图例</h3><p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022202987.jpg"
+                     data-src="https://image.txg2333.top/2022/02/202202022202987.jpg"
                       alt="b2d095f0fc5eb1508012e00906987214"
                 ></p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022203809.jpg"
+                     data-src="https://image.txg2333.top/2022/02/202202022203809.jpg"
                       alt="167ed0eb8647448892364ecb31ecdac2"
                 ></p>
 <h2 id="二、偏差与方差"><a href="#二、偏差与方差" class="headerlink" title="二、偏差与方差"></a>二、偏差与方差</h2><h3 id="1、定义-1"><a href="#1、定义-1" class="headerlink" title="1、定义"></a>1、定义</h3><p>偏差：预计值的期望与真实值之间的差距</p>
@@ -424,28 +440,28 @@
 <h3 id="2、图例"><a href="#2、图例" class="headerlink" title="2、图例"></a>2、图例</h3><p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022206209.jpg"
+                     data-src="https://image.txg2333.top/2022/02/202202022206209.jpg"
                       alt="9423562ff72e39a83b1102a5a009d374"
                 ></p>
 <p>上图表示，如果一个模型在训练集上正确率为 80%，测试集上正确率为 79% ，则模型欠拟合，其中 20% 的误差来自于偏差，1% 的误差来自于方差。如果一个模型在训练集上正确率为 99%，测试集上正确率为 80% ，则模型过拟合，其中 1% 的误差来自于偏差，19% 的误差来自于方差。可以看出，欠拟合是一种高偏差的情况。过拟合是一种低偏差，高方差的情况。</p>
 <h2 id="三、衡量回归的性能指标"><a href="#三、衡量回归的性能指标" class="headerlink" title="三、衡量回归的性能指标"></a>三、衡量回归的性能指标</h2><h3 id="1、MSE-（Mean-Squared-Error）均方误差"><a href="#1、MSE-（Mean-Squared-Error）均方误差" class="headerlink" title="1、MSE （Mean Squared Error）均方误差"></a>1、MSE （Mean Squared Error）均方误差</h3><p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022209619.png"
+                     data-src="https://image.txg2333.top/2022/02/202202022209619.png"
                       alt="image-20220202220948853"
                 ></p>
 <p>其中y的i次方表示第 i 个样本的真实标签，p的i次方表表示模型对第 i 个样本的预测标签。线性回归的目的就是让损失函数最小。那么模型训练出来了，我们在测试集上用损失函数来评估模型就行了。</p>
 <h3 id="2、RMSE（Root-Mean-Squard-Error）均方根误差"><a href="#2、RMSE（Root-Mean-Squard-Error）均方根误差" class="headerlink" title="2、RMSE（Root Mean Squard Error）均方根误差"></a>2、RMSE（Root Mean Squard Error）均方根误差</h3><p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022211113.png"
+                     data-src="https://image.txg2333.top/2022/02/202202022211113.png"
                       alt="image-20220202221123863"
                 ></p>
 <p>RMSE 其实就是 MSE 开个根号。有什么意义呢？其实实质是一样的。只不过用于数据更好的描述</p>
 <h3 id="3、MAE-平均绝对误差"><a href="#3、MAE-平均绝对误差" class="headerlink" title="3、MAE (平均绝对误差)"></a>3、MAE (平均绝对误差)</h3><p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022212523.png"
+                     data-src="https://image.txg2333.top/2022/02/202202022212523.png"
                       alt="image-20220202221201902"
                 ></p>
 <p>MAE 虽然不作为损失函数，确是一个非常直观的评估指标，它表示每个样本的预测标签值与真实标签值的 L1 距离</p>
@@ -453,49 +469,49 @@
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022212889.png"
+                     data-src="https://image.txg2333.top/2022/02/202202022212889.png"
                       alt="image-20220202221254874"
                 ></p>
 <h2 id="四、混淆矩阵"><a href="#四、混淆矩阵" class="headerlink" title="四、混淆矩阵"></a>四、混淆矩阵</h2><p>以癌症检测系统为例，癌症检测系统的输出不是有癌症就是健康，这里为了方便，就用 1 表示患有癌症，0 表示健康。假设现在拿 10000 条数据来进行测试，其中有 9978 条数据的真实类别是 0，系统预测的类别也是 0，有 2 条数据的真实类别是 1 却预测成了 0，有 12 条数据的真实类别是 0 但预测成了 1，有 8 条数据的真实类别是 1，预测结果也是 1，如果我们把这些结果组成如下矩阵，则该矩阵就成为<strong>混淆矩阵</strong></p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022218334.png"
+                     data-src="https://image.txg2333.top/2022/02/202202022218334.png"
                       alt="image-20220202221856096"
                 ></p>
 <p>混淆矩阵中每个格子所代表的的意义也很明显，意义如下：</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022219812.png"
+                     data-src="https://image.txg2333.top/2022/02/202202022219812.png"
                       alt="image-20220202221927858"
                 ></p>
 <p>如果将正确看成是 True，错误看成是 False， 0 看成是 Negtive， 1 看成是 Positive。然后将上表中的文字替换掉，混淆矩阵如下：</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022219579.png"
+                     data-src="https://image.txg2333.top/2022/02/202202022219579.png"
                       alt="image-20220202221943918"
                 ></p>
 <h2 id="五、精准率与召回率"><a href="#五、精准率与召回率" class="headerlink" title="五、精准率与召回率"></a>五、精准率与召回率</h2><h3 id="1、精准率"><a href="#1、精准率" class="headerlink" title="1、精准率"></a>1、精准率</h3><p>**精准率(Precision)**指的是模型预测为 Positive 时的预测准确度，其计算公式如下：</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022217729.png"
+                     data-src="https://image.txg2333.top/2022/02/202202022217729.png"
                       alt="image-20220202221622945"
                 ></p>
 <h3 id="2、召回率"><a href="#2、召回率" class="headerlink" title="2、召回率"></a>2、召回率</h3><p>**召回率(Recall)**指的是我们关注的事件发生了，并且模型预测正确了的比值，其计算公式如下：</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022217885.png"
+                     data-src="https://image.txg2333.top/2022/02/202202022217885.png"
                       alt="image-20220202221714087"
                 ></p>
 <h2 id="六、F1-Score"><a href="#六、F1-Score" class="headerlink" title="六、F1 Score"></a>六、F1 Score</h2><p>如果想要同时兼顾<strong>精准率</strong>和<strong>召回率</strong>，这个时候就可以使用 <strong>F1 Score</strong> 来作为性能度量指标。<strong>F1 Score</strong> 是统计学中用来衡量二分类模型精确度的一种指标。它同时兼顾了分类模型的准确率和召回率。 F1 Score 可以看作是模型准确率和召回率的一种加权平均，它的最大值是 1，最小值是 0。其公式如下：</p>
 <p><img  
                      lazyload
                      src="/images/loading.svg"
-                     data-src="http://image.txg2333.top/2022/02/202202022221992.png"
+                     data-src="https://image.txg2333.top/2022/02/202202022221992.png"
                       alt="image-20220202222109237"
                 ></p>
 
@@ -512,7 +528,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2022-12-13 15:49:25
+                    :</strong> 2023-10-23 15:03:07
             </li>
         
         <li>
@@ -618,7 +634,7 @@
                         href="/2021/10/25/2021xju-ctf%E6%96%B0%E7%94%9F%E8%B5%9Bwriteup/"
                         >
                             <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">2021XJU CTF新生赛WriteUp</span>
+                                <span class="post-nav-title-item">2021XJU CTF新生赛Writeup</span>
                                 <span class="post-nav-item">下一篇</span>
                             </span>
                             <span class="right arrow-icon flex justify-center items-center">
