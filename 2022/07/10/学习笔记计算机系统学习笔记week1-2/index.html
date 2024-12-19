@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Thou">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://blog.txgde.space/2022/07/10/学习笔记计算机系统学习笔记week1-2/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="信息的编码机器级数据分为​ 数值数据：无符号整数、带符号整数、浮点数 ​ 非数值数据：逻辑数、西文字符和汉字 所有的信息都是使用二进制进行编码的 真值和机器数(重要!!!):​ 机器数:用0和1编码的计算机内部的0&#x2F;1序列​ 真值：真正的值，即：现实中带正负号的数 数值数据表示的三要素 进位计数制 定、浮点数表示 如何用二进制编码  进位计数制十进制、二进制、十六进制、八进制及其相互转换">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[学习笔记]计算机系统学习笔记Week1-2">
+<meta property="og:url" content="http://blog.txgde.space/2022/07/10/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0week1-2/index.html">
+<meta property="og:site_name" content="童旭光的博客">
+<meta property="og:description" content="信息的编码机器级数据分为​ 数值数据：无符号整数、带符号整数、浮点数 ​ 非数值数据：逻辑数、西文字符和汉字 所有的信息都是使用二进制进行编码的 真值和机器数(重要!!!):​ 机器数:用0和1编码的计算机内部的0&#x2F;1序列​ 真值：真正的值，即：现实中带正负号的数 数值数据表示的三要素 进位计数制 定、浮点数表示 如何用二进制编码  进位计数制十进制、二进制、十六进制、八进制及其相互转换">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://image.txgde.space/2022/07/202207102008131.png">
+<meta property="og:image" content="https://image.txgde.space/2022/07/202207102059313.png">
+<meta property="og:image" content="https://image.txgde.space/2022/07/202207102109544.png">
+<meta property="og:image" content="https://image.txgde.space/2022/07/202207102110475.png">
+<meta property="article:published_time" content="2022-07-10T13:15:56.000Z">
+<meta property="article:modified_time" content="2024-12-19T07:27:27.023Z">
+<meta property="article:author" content="Thou">
+<meta property="article:tag" content="学习笔记">
+<meta property="article:tag" content="计算机系统">
+<meta property="article:tag" content="信息编码">
+<meta property="article:tag" content="原码">
+<meta property="article:tag" content="反码">
+<meta property="article:tag" content="模">
+<meta property="article:tag" content="浮点数">
+<meta property="article:tag" content="移码">
+<meta property="article:tag" content="补码">
+<meta property="article:tag" content="进制转换">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://image.txgde.space/2022/07/202207102008131.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="https://image.txgde.space/avatar.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://image.txgde.space/avatar.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="https://image.txgde.space/avatar.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            [学习笔记]计算机系统学习笔记Week1-2 -
+        
+        ThouDe Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+        <link href="" rel="stylesheet">
+    
+    
+        <link href="" rel="stylesheet">
+    
+
+    <!--- Inject Part-->
+    
+        
+    <script id="hexo-configurations">
+    window.config = {"hostname":"blog.txgde.space","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":true,"family":null,"url":null},"english":{"enable":true,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":true},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Welcome to Thouの空间","subtitle":{"text":["Coding coding coding!","Let us code!"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/txgde-space","instagram":null,"zhihu":null,"twitter":null,"email":"tongxuguang23@icloud.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"我的":{"icon":"fa-regular fa-user","submenus":{"个人主页":"http://i.txgde.space","Github":"https://github.com/txgde-space"}}},"search":{"enable":true,"preload":true},"tags":{"Tags":{"icon":"fa-solid fa-tags","path":"/tags/"}},"categories":{"Categories":{"icon":"fa-solid fa-folder","path":"/categories/"}}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":"好累😭","links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2021/10/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                ThouDe Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown" 
+                                    href="#" onClick="return false;">
+                                    
+                                        
+                                            <i class="fa-regular fa-user"></i>
+                                        
+                                        我的&nbsp;<i class="fa-solid fa-chevron-down"></i>
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="http://i.txgde.space">个人主页
+                                        </a>
+                                        </li>
+                                    
+                                        <li>
+                                        <a target="_blank" rel="noopener" href="https://github.com/txgde-space">GITHUB
+                                        </a>
+                                        </li>
+                                    
+                                    </ul>
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i></div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group has-dropdown" 
+                        href="#" onClick="return false;">
+                            
+                                
+                                    <i class="fa-regular fa-user"></i>
+                                
+                                我的&nbsp;<i class="group-hover:rotate-180 transition-transform fa-solid fa-chevron-down"></i>
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                              
+                        
+                            <li class="drawer-navbar-item text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" target="_blank" rel="noopener" href="http://i.txgde.space">个人主页</a>
+                            </li>
+                        
+                            <li class="drawer-navbar-item text-base flex justify-center items-center hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                <a class="py-0.5" target="_blank" rel="noopener" href="https://github.com/txgde-space">GITHUB</a>
+                            </li>
+                        
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">[学习笔记]计算机系统学习笔记Week1-2</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header flex flex-row gap-2 items-center">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="https://image.txgde.space/avatar.svg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">Thou</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2022-07-10 21:15:56</span>
+        <span class="mobile">2022-07-10 21:15:56</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-12-19 15:27:27</span>
+            <span class="mobile">2024-12-19 15:27:27</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">计算机系统</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E4%BF%A1%E6%81%AF%E7%BC%96%E7%A0%81/">信息编码</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%8E%9F%E7%A0%81/">原码</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%8F%8D%E7%A0%81/">反码</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%A8%A1/">模</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%B5%AE%E7%82%B9%E6%95%B0/">浮点数</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E7%A7%BB%E7%A0%81/">移码</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E8%A1%A5%E7%A0%81/">补码</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2/">进制转换</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body">
+            <h2 id="信息的编码"><a href="#信息的编码" class="headerlink" title="信息的编码"></a>信息的编码</h2><h3 id="机器级数据分为"><a href="#机器级数据分为" class="headerlink" title="机器级数据分为"></a>机器级数据分为</h3><p>​ 数值数据：无符号整数、带符号整数、浮点数</p>
+<p>​ 非数值数据：逻辑数、西文字符和汉字</p>
+<h3 id="所有的信息都是使用二进制进行编码的"><a href="#所有的信息都是使用二进制进行编码的" class="headerlink" title="所有的信息都是使用二进制进行编码的"></a>所有的信息都是使用二进制进行编码的</h3><p> <strong>真值和机器数(重要!!!):</strong><br>​ <strong>机器数</strong>:用0和1编码的计算机内部的0&#x2F;1序列<br>​ <strong>真值</strong>：真正的值，即：现实中带正负号的数</p>
+<h3 id="数值数据表示的三要素"><a href="#数值数据表示的三要素" class="headerlink" title="数值数据表示的三要素"></a>数值数据表示的三要素</h3><ul>
+<li>进位计数制</li>
+<li>定、浮点数表示</li>
+<li>如何用二进制编码</li>
+</ul>
+<h4 id="进位计数制"><a href="#进位计数制" class="headerlink" title="进位计数制"></a>进位计数制</h4><p>十进制、二进制、十六进制、八进制及其相互转换</p>
+<h4 id="定-浮点数表示-解决小数点问题"><a href="#定-浮点数表示-解决小数点问题" class="headerlink" title="定&#x2F;浮点数表示(解决小数点问题)"></a>定&#x2F;浮点数表示(解决小数点问题)</h4><ul>
+<li>定点整数、定点小数</li>
+<li>浮点数(可用一个定点小数和一个定点整数来表示)</li>
+</ul>
+<h4 id="定点数的编码-解决正负号问题"><a href="#定点数的编码-解决正负号问题" class="headerlink" title="定点数的编码(解决正负号问题)"></a>定点数的编码(解决正负号问题)</h4><ul>
+<li>原码、补码、反码、移码</li>
+</ul>
+<h3 id="R进制计数制"><a href="#R进制计数制" class="headerlink" title="R进制计数制"></a>R进制计数制</h3><p>R进制有R个基本符号(0~R-1),采用”逢R进一”的运算规则，对于每个数位i，该位上的权为Ri, R被称为该数字系统的基。</p>
+<h3 id="R进制表示法"><a href="#R进制表示法" class="headerlink" title="R进制表示法"></a>R进制表示法</h3><p>二进制：Binary(<strong>以0b或者0B开头</strong>)</p>
+<p>八进制：Octal(<strong>以”0”开头</strong>)</p>
+<p>十进制：Decimal</p>
+<p>十六进制：Hexadecimal(<strong>以”0x”开头或者以”H”为后缀</strong>)</p>
+<h3 id="十进制数与R进制数之间的转换"><a href="#十进制数与R进制数之间的转换" class="headerlink" title="十进制数与R进制数之间的转换"></a>十进制数与R进制数之间的转换</h3><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txgde.space/2022/07/202207102008131.png"
+                      alt="image-20220710200812070"
+                ></p>
+<p>从低位到高位每3位二进制数可表示一位八进制数、每4位二进制数可表示一位十六进制数，高位补零</p>
+<h2 id="定点数和浮点数"><a href="#定点数和浮点数" class="headerlink" title="定点数和浮点数"></a>定点数和浮点数</h2><p>定点数：小数点位置约定在固定位置的数称为<strong>定点数</strong></p>
+<p>浮点数：小数点位置约定为可浮动的数称为<strong>浮点数</strong></p>
+<p>​ 浮点数的<strong>尾数</strong>部分为定点小数，整数部分为<strong>带符号整数</strong>或者<strong>无符号整数</strong></p>
+<p>​ 任何实数X&#x3D;(-1)S * M * RE,其中S取0&#x2F;1，用来确定X的符号；M是一个二进制定点小数，称为X的<strong>尾数</strong>;E是一个二进制定点整数，称为X的<strong>阶或指数</strong>；R是基数。</p>
+<h2 id="原码、补码、反码、移码"><a href="#原码、补码、反码、移码" class="headerlink" title="原码、补码、反码、移码"></a>原码、补码、反码、移码</h2><p><strong>原码</strong>的表示与机器数真值表示的一样，即用第一位表示符号(0为整数，1为负数)，其余位表示数值<br>如果用原码表示，让符号位也参与计算，对于减法来说，结果是不正确的。这也是计算机内部在存储数据时不使用原码的原因，为了解决这一问题，出现了反码。<br><strong>反码</strong>的表示方法为：正数的反码是其原码本身。负数的反码是在其原码的基础上，符号位不变，其余各位取反<br>通过计算我们发现用反码计算减法，结果的真值部分是正确的。而唯一的问题出现在”0”这个特殊的数值上，虽然人们理解上**+0和-0**是一样的，但是0带符号是没有任何意义的，而且会有[0000 0000]原和[1000 0000]原两个编码表示0。为了解决这一问题，出现了补码。<br><strong>补码</strong>的表示方法为正数的补码是其原码本身。负数的补码是在其原码的基础上，符号位不变，其余各位取反后加1（即在反码的基础上加1）。<br>为了方便浮点数进行加减运算时的对阶操作<br><strong>移码</strong>的表示方法为将每一个数值加上一个偏置常数(Excess&#x2F;bias)，通常当编码位数为n时，bias取2n-1或2n-1-1，当bias取2n-1时，移码为补码的高位加一。</p>
+<h2 id="补码-模运算"><a href="#补码-模运算" class="headerlink" title="补码-模运算"></a>补码-模运算</h2><p>概念：在一个模运算系统中，一个数与它除以”模”后的余数等价<br>结论：</p>
+<ul>
+<li>1、一个负数的补码等于**<em>模减该负数的绝对值</em>**</li>
+<li>2、对于某一确定的模，某数减去小于模的另一数，总可以用该数加上另一数负数的补码来代替。</li>
+</ul>
+<p>补码：[X]补=2n+X (-2n&lt;&#x3D;X &lt;2n, mod 2n), X是真值，[X]补是机器数</p>
+<h2 id="变形补码"><a href="#变形补码" class="headerlink" title="变形补码"></a>变形补码</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txgde.space/2022/07/202207102059313.png"
+                      alt="image-20220710205902259"
+                ></p>
+<h2 id="无符号整数"><a href="#无符号整数" class="headerlink" title="无符号整数"></a>无符号整数</h2><p>分为高到低位从左到右排列或从右到左排列，用LSB(Least Significant Bit)来表示最低有效位,用MSB来表示最高有效位，无符号位</p>
+<h2 id="带符号整数"><a href="#带符号整数" class="headerlink" title="带符号整数"></a>带符号整数</h2><p>MSB为符号位，可用原码、移码、补码来表示</p>
+<p>通常使用补码来表示带符号数：</p>
+<p>​ 补码运算系统是模运算系统，加减运算统一</p>
+<p>​ 数0的表示唯一，方便使用</p>
+<p>​ 比原码多表示一个最小负数</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txgde.space/2022/07/202207102109544.png"
+                      alt="image-20220710210915496"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://image.txgde.space/2022/07/202207102110475.png"
+                      alt="image-20220710211048433"
+                ></p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> [学习笔记]计算机系统学习笔记Week1-2</li>
+        <li><strong>作者:</strong> Thou</li>
+        <li><strong>创建于
+                :</strong> 2022-07-10 21:15:56</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-12-19 15:27:27
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://blog.txgde.space/2022/07/10/学习笔记计算机系统学习笔记week1-2/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+            本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a> 进行许可。
+            
+
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">#学习笔记</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F/">#计算机系统</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E4%BF%A1%E6%81%AF%E7%BC%96%E7%A0%81/">#信息编码</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E5%8E%9F%E7%A0%81/">#原码</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E5%8F%8D%E7%A0%81/">#反码</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E6%A8%A1/">#模</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E6%B5%AE%E7%82%B9%E6%95%B0/">#浮点数</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E7%A7%BB%E7%A0%81/">#移码</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E8%A1%A5%E7%A0%81/">#补码</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2/">#进制转换</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2022/07/18/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0week2-1/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">[学习笔记]计算机系统学习笔记Week2-1</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2022/07/10/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0week1-1/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">[学习笔记]计算机系统学习笔记Week1-1</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div class="twikoo-container">
+        <script data-swup-reload-script
+                src='https://cdn.staticfile.org/twikoo/1.6.40/twikoo.all.min.js'
+        ></script>
+        <div id="twikoo-comment"></div>
+        <script data-swup-reload-script>
+            function loadTwikoo() {
+                twikoo.init({
+                    el: '#twikoo-comment',
+                    envId: 'https://home.txgde.space:30443',
+                });
+            }
+
+            if ('true') {
+                const loadTwikooTimeout = setTimeout(() => {
+                    loadTwikoo();
+                    clearTimeout(loadTwikooTimeout);
+                }, 1000);
+            } else {
+                window.addEventListener('DOMContentLoaded', loadTwikoo);
+            }
+        </script>
+    </div>
+
+
+        
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">[学习笔记]计算机系统学习笔记Week1-2</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E7%9A%84%E7%BC%96%E7%A0%81"><span class="nav-text">信息的编码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E7%BA%A7%E6%95%B0%E6%8D%AE%E5%88%86%E4%B8%BA"><span class="nav-text">机器级数据分为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%80%E6%9C%89%E7%9A%84%E4%BF%A1%E6%81%AF%E9%83%BD%E6%98%AF%E4%BD%BF%E7%94%A8%E4%BA%8C%E8%BF%9B%E5%88%B6%E8%BF%9B%E8%A1%8C%E7%BC%96%E7%A0%81%E7%9A%84"><span class="nav-text">所有的信息都是使用二进制进行编码的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E5%80%BC%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%A4%BA%E7%9A%84%E4%B8%89%E8%A6%81%E7%B4%A0"><span class="nav-text">数值数据表示的三要素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#R%E8%BF%9B%E5%88%B6%E8%AE%A1%E6%95%B0%E5%88%B6"><span class="nav-text">R进制计数制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#R%E8%BF%9B%E5%88%B6%E8%A1%A8%E7%A4%BA%E6%B3%95"><span class="nav-text">R进制表示法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%81%E8%BF%9B%E5%88%B6%E6%95%B0%E4%B8%8ER%E8%BF%9B%E5%88%B6%E6%95%B0%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-text">十进制数与R进制数之间的转换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E7%82%B9%E6%95%B0%E5%92%8C%E6%B5%AE%E7%82%B9%E6%95%B0"><span class="nav-text">定点数和浮点数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%A0%81%E3%80%81%E8%A1%A5%E7%A0%81%E3%80%81%E5%8F%8D%E7%A0%81%E3%80%81%E7%A7%BB%E7%A0%81"><span class="nav-text">原码、补码、反码、移码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81-%E6%A8%A1%E8%BF%90%E7%AE%97"><span class="nav-text">补码-模运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E5%BD%A2%E8%A1%A5%E7%A0%81"><span class="nav-text">变形补码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E6%95%B0"><span class="nav-text">无符号整数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A6%E7%AC%A6%E5%8F%B7%E6%95%B4%E6%95%B0"><span class="nav-text">带符号整数</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+            <div class="customize-info my-1"><a href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral" target="_blank"><img id="upyun_logo" style="display:inline" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTEiIGhlaWdodD0iMzgiIHZpZXdCb3g9IjAgMCAxMTEgMzgiPgogIDxnIGZpbGw9IiNGRkZGRkYiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xKSI+CiAgICA8cGF0aCBkPSJNMzAuOCw0LjEgTDMwLjgsNC4xIEwzMC44LDQuMSBMMzAuOCw0LjEgTDMwLjgsNC4xIEMzMC4xLDMuNiAyOS40LDMuMSAyOC42LDIuNyBDMjguMSwyLjQgMjcuNCwyLjUgMjcsMyBMMjIuMyw5LjIgTDIyLDkuNiBDMjEuNSwxMC4zIDIwLjcsMTAuNiAxOS45LDEwLjYgTDE5LDEwLjYgQzE2LjcsMTAuNyAxNC40LDExLjkgMTIuOSwxMy45IEMxMS43LDE1LjUgMTEuMSwxNy40IDExLjIsMTkuMyBDMTEuMiwxOS42IDExLjQsMTkuOSAxMS43LDIwLjEgQzEyLjMsMjAuNCAxMi44LDIxIDEzLDIxLjcgQzEzLjIsMjIuOCAxMi41LDIzLjggMTEuNSwyNC4xIEMxMC4zLDI0LjUgOSwyMy43IDguNywyMi41IEM4LjUsMjEuOCA4LjcsMjEuMiA5LjEsMjAuNyBDOS4zLDIwLjQgOS40LDIwLjEgOS40LDE5LjcgQzkuMiwxNy4zIDkuOCwxNC44IDExLjQsMTIuNyBDMTMuNCwxMC4xIDE2LjQsOC43IDE5LjUsOC43IEMyMC4xLDguNyAyMC42LDguNCAyMSw3LjkgTDI1LjMsMi4yIEMyNS42LDEuOCAyNS40LDEuMSAyNC45LDEgQzE3LjcsLTEgOS43LDEuNCA0LjgsNy43IEMtMS40LDE1LjggMC4xLDI3LjUgOC4yLDMzLjggQzksMzQuNCA5LjcsMzQuOSAxMC42LDM1LjQgQzExLjEsMzUuNyAxMS44LDM1LjYgMTIuMiwzNS4xIEwxNi45LDI4LjkgTDE3LjIsMjguNSBDMTcuNywyNy44IDE4LjUsMjcuNSAxOS4zLDI3LjUgTDIwLjIsMjcuNSBDMjIuNSwyNy40IDI0LjgsMjYuMiAyNi4zLDI0LjIgQzI3LjUsMjIuNiAyOC4xLDIwLjcgMjgsMTguOCBDMjgsMTguNSAyNy44LDE4LjIgMjcuNSwxOCBDMjYuOSwxNy43IDI2LjQsMTcuMSAyNi4yLDE2LjQgQzI2LDE1LjMgMjYuNywxNC4zIDI3LjcsMTQgQzI4LjksMTMuNiAzMC4yLDE0LjQgMzAuNSwxNS42IEMzMC43LDE2LjMgMzAuNSwxNi45IDMwLjEsMTcuNCBDMjkuOSwxNy43IDI5LjgsMTggMjkuOCwxOC40IEMzMCwyMC44IDI5LjQsMjMuMyAyNy44LDI1LjQgQzI1LjgsMjggMjIuOCwyOS40IDE5LjcsMjkuNCBDMTkuMSwyOS40IDE4LjYsMjkuNyAxOC4yLDMwLjIgTDE0LDM1LjYgQzEzLjcsMzYgMTMuOSwzNi43IDE0LjQsMzYuOCBDMjEuNiwzOC45IDI5LjcsMzYuNSAzNC41LDMwLjEgQzQwLjcsMjIgMzksMTAuMyAzMC44LDQuMSBaIi8+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0MyA4KSI+CiAgICAgIDxwYXRoIGQ9Ik0xOC42LDIgTDE4LjYsMS42IEMxOC42LDEuMiAxOC4zLDEgMTgsMSBMMy41LDEgQzMuMiwxIDIuOSwxLjMgMi45LDEuNiBMMi45LDIuNSBDMi45LDIuOCAzLjIsMy4xIDMuNSwzLjEgTDE1LjgsMy4xIEMxNi4yLDMuMSAxNi40LDMuNCAxNi40LDMuOCBDMTYuMSw2LjEgMTUsMTAuNCAxMS42LDE0LjUgQzExLjQsMTQuOCAxMC45LDE0LjggMTAuNywxNC41IEM3LjksMTAuOSA3LDcuMiA2LjgsNS44IEM2LjcsNS41IDYuNSw1LjMgNi4yLDUuMyBMNS43LDUuMyBMNS4zLDUuMyBDNSw1LjMgNC43LDUuNiA0LjgsNiBDNS4xLDcuNiA2LjEsMTEuOSA5LjUsMTYgQzkuNywxNi4yIDkuNywxNi42IDkuNSwxNi44IEM1LjUsMjAuNSAxLjgsMjEuMyAwLjUsMjEuNSBDMC4yLDIxLjUgNy4xMDU0MjczNmUtMTUsMjEuOCA3LjEwNTQyNzM2ZS0xNSwyMi4xIEw3LjEwNTQyNzM2ZS0xNSwyMyBDNy4xMDU0MjczNmUtMTUsMjMuMyAwLjMsMjMuNiAwLjYsMjMuNiBDMi4xLDIzLjQgNi4zLDIyLjUgMTAuOCwxOC4zIEMxMSwxOC4xIDExLjQsMTguMSAxMS42LDE4LjMgQzEzLjgsMjAuMyAxNi42LDIyLjMgMjAuNCwyMy41IEMyMC43LDIzLjYgMjEsMjMuNCAyMS4xLDIzLjEgTDIxLjQsMjIuMyBDMjEuNSwyMiAyMS4zLDIxLjcgMjEsMjEuNiBDMTcuNSwyMC41IDE1LDE4LjcgMTMsMTYuOSBDMTIuOCwxNi43IDEyLjgsMTYuMyAxMywxNi4xIEMxOC41LDkuNCAxOC42LDIuMyAxOC42LDIgWiIvPgogICAgICA8cGF0aCBkPSJNMjguNiwwLjEgTDI3LjcsMC4xIEMyNy40LDAuMSAyNy4xLDAuNCAyNy4xLDAuNyBMMjcuMSwzLjggQzI3LjEsNC4xIDI2LjgsNC40IDI2LjUsNC40IEwyNC40LDQuNCBDMjQuMSw0LjQgMjMuOCw0LjcgMjMuOCw1IEwyMy44LDUuOSBDMjMuOCw2LjIgMjQuMSw2LjUgMjQuNCw2LjUgTDI2LjUsNi41IEMyNi44LDYuNSAyNy4xLDYuOCAyNy4xLDcuMSBMMjcuMSwxMS42IEMyNy4xLDExLjkgMjYuOCwxMi4yIDI2LjUsMTIuMiBMMjQuNCwxMi4yIEMyNC4xLDEyLjIgMjMuOCwxMi41IDIzLjgsMTIuOCBMMjMuOCwxMy43IEMyMy44LDE0IDI0LjEsMTQuMyAyNC40LDE0LjMgTDI2LjUsMTQuMyBDMjYuOCwxNC4zIDI3LjEsMTQuNiAyNy4xLDE0LjkgTDI3LjEsMTkuMiBDMjcuMSwyMC4xIDI2LjcsMjEuNiAyNC40LDIxLjggQzI0LjEsMjEuOCAyMy45LDIyLjEgMjMuOSwyMi40IEwyMy45LDIzIEMyMy45LDIzLjMgMjQuMiwyMy42IDI0LjUsMjMuNiBDMjYuOCwyMy40IDI5LjIsMjIuMSAyOS4yLDE4LjkgTDI5LjIsMTQuNiBDMjkuMiwxNC4zIDI5LjUsMTQgMjkuOCwxNCBMMzEuNywxNCBDMzIsMTQgMzIuMywxMy43IDMyLjMsMTMuNCBMMzIuMywxMi41IEMzMi4zLDEyLjIgMzIsMTEuOSAzMS43LDExLjkgTDI5LjgsMTEuOSBDMjkuNSwxMS45IDI5LjIsMTEuNiAyOS4yLDExLjMgTDI5LjIsNi44IEMyOS4yLDYuNSAyOS41LDYuMiAyOS44LDYuMiBMMzEuNyw2LjIgQzMyLDYuMiAzMi4zLDUuOSAzMi4zLDUuNiBMMzIuMyw0LjcgQzMyLjMsNC40IDMyLDQuMSAzMS43LDQuMSBMMjkuOCw0LjEgQzI5LjUsNC4xIDI5LjIsMy44IDI5LjIsMy41IEwyOS4yLDAuNiBDMjkuMiwwLjMgMjksMC4xIDI4LjYsMC4xIFoiLz4KICAgICAgPHBhdGggZD0iTTMzLjIsMjIuOCBDMzMuMiwyMy4xIDMzLjUsMjMuNCAzMy44LDIzLjQgTDQwLjMsMjMuNCBDNDMuMiwyMy40IDQ1LjUsMjEuMiA0NS41LDE4LjQgTDQ1LjUsNC43IEM0NS41LDQuNCA0NS4yLDQuMSA0NC45LDQuMSBMMzMuOCw0LjEgQzMzLjUsNC4xIDMzLjIsNC40IDMzLjIsNC43IEwzMy4yLDIyLjggWiBNNDAuNCwyMS40IEwzNS45LDIxLjQgQzM1LjYsMjEuNCAzNS4zLDIxLjEgMzUuMywyMC44IEwzNS4zLDE0LjYgQzM1LjMsMTQuMyAzNS42LDE0IDM1LjksMTQgTDQzLDE0IEM0My4zLDE0IDQzLjYsMTQuMyA0My42LDE0LjYgTDQzLjYsMTguNCBDNDMuNiwyMC4xIDQyLjEsMjEuNCA0MC40LDIxLjQgWiBNNDMuNiw2LjcgTDQzLjYsMTEuNCBDNDMuNiwxMS43IDQzLjMsMTIgNDMsMTIgTDM1LjksMTIgQzM1LjYsMTIgMzUuMywxMS43IDM1LjMsMTEuNCBMMzUuMyw2LjcgQzM1LjMsNi40IDM1LjYsNi4xIDM1LjksNi4xIEw0Myw2LjEgQzQzLjMsNi4yIDQzLjYsNi40IDQzLjYsNi43IFoiLz4KICAgICAgPHBhdGggZD0iTTQyLjEsMCBMMzYuMywwIEMzNiwwIDM1LjcsMC4zIDM1LjcsMC42IEwzNS43LDEuNSBDMzUuNywxLjggMzYsMi4xIDM2LjMsMi4xIEw0Mi4xLDIuMSBDNDIuNCwyLjEgNDIuNywxLjggNDIuNywxLjUgTDQyLjcsMC42IEM0Mi43LDAuMyA0Mi41LDAgNDIuMSwwIFoiLz4KICAgICAgPHBhdGggZD0iTTY0LjIsMC45IEw1Mi4yLDAuOSBDNTEuOSwwLjkgNTEuNiwxLjIgNTEuNiwxLjUgTDUxLjYsMi40IEM1MS42LDIuNyA1MS45LDMgNTIuMiwzIEw2NC4yLDMgQzY0LjUsMyA2NC44LDIuNyA2NC44LDIuNCBMNjQuOCwxLjUgQzY0LjgsMS4yIDY0LjUsMC45IDY0LjIsMC45IFoiLz4KICAgICAgPHBhdGggZD0iTTU5LjEsMTEuMiBMNjcuNSwxMS4yIEM2Ny44LDExLjIgNjguMSwxMC45IDY4LjEsMTAuNiBMNjguMSw5LjcgQzY4LjEsOS40IDY3LjgsOS4xIDY3LjUsOS4xIEw0OC45LDkuMSBDNDguNiw5LjEgNDguMyw5LjQgNDguMyw5LjcgTDQ4LjMsMTAuNiBDNDguMywxMC45IDQ4LjYsMTEuMiA0OC45LDExLjIgTDU0LjYsMTEuMiBDNTUuMSwxMS4yIDU1LjMsMTEuNyA1NS4xLDEyLjEgTDUxLjMsMTkgQzUxLjIsMTkuMiA1MS4xLDE5LjMgNTEuMSwxOS41IEM1MC44LDIwLjQgNTAuOSwyMS40IDUxLjUsMjIuMiBDNTIuMSwyMyA1My4xLDIzLjYgNTQuMiwyMy42IEw2NC42LDIzLjYgQzY1LjEsMjMuNiA2NS41LDIzLjQgNjUuNywyMyBDNjUuOSwyMi42IDY2LDIyLjEgNjUuOCwyMS43IEw2My40LDE3IEM2My4zLDE2LjcgNjIuOSwxNi42IDYyLjYsMTYuOCBMNjEuOCwxNy4yIEM2MS41LDE3LjMgNjEuNCwxNy43IDYxLjYsMTggTDYzLDIwLjggQzYzLjIsMjEuMiA2Mi45LDIxLjYgNjIuNSwyMS42IEw1NC4yLDIxLjYgQzUzLjgsMjEuNiA1My40LDIxLjQgNTMuMiwyMS4xIEM1My4xLDIxIDUyLjksMjAuNyA1MywyMC4zIEM1MywyMC4yIDUzLDIwLjIgNTMuMSwyMC4xIEw1Ny43LDEyIEM1OCwxMS41IDU4LjUsMTEuMiA1OS4xLDExLjIgWiIvPgogICAgPC9nPgogIDwvZz4KPC9zdmc+Cg=="><a></div>
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2021</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Thou</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.5.0</a></span>
+        </div>
+        
+            <div class="icp-info my-1"><a target="_blank" rel="nofollow" href="
+                
+                    https://beian.miit.gov.cn/
+                
+                ">豫ICP备20024242号-3</a></div>
+        
+        
+            <div class="icp-info my-1"><img class="top-[2px] relative inline-block" style="display: inline-block;vertical-align: baseline;height:1rem;" src="
+                
+                    https://beian.mps.gov.cn/web/assets/logo01.6189a29f.png
+                
+                "><a target="_blank" rel="nofollow" href="
+                
+                    https://beian.mps.gov.cn/\#/query/webSearch?code=41010302002807\
+                
+                ">豫公网安备41010302002807号</a></div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+            
+                
+        
+                
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
