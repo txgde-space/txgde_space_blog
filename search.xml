@@ -4056,15 +4056,6 @@ Markup: --------------- (below H2 text)
       </tags>
   </entry>
   <entry>
-    <title>啊啊啊啊啊啊</title>
-    <url>/2023/09/28/%E6%89%8B%E5%86%99%20SHA-1%20%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%EF%BC%8C%E5%98%BF%E5%98%BF/</url>
-    <content><![CDATA[<p>啊啊啊啊啊啊<br>国防科大直博、吉大计科学硕和东南网安专硕到底选哪一个😣</p>
-]]></content>
-      <categories>
-        <category>瞎咧咧</category>
-      </categories>
-  </entry>
-  <entry>
     <title>折腾 Ubuntu 随记</title>
     <url>/2022/12/27/%E6%8A%98%E8%85%BE%20Ubuntu%20%E9%9A%8F%E8%AE%B0/</url>
     <content><![CDATA[<p>狂推<a class="link"   href="https://wiki.archlinuxcn.org/" >Arch Wiki <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
@@ -4244,5 +4235,67 @@ Markup: --------------- (below H2 text)
         <tag>无验证</tag>
         <tag>题型总结</tag>
       </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2024/12/19/gef%E7%9A%84%E5%AE%89%E8%A3%85/</url>
+    <content><![CDATA[<h1 id="gef的安装"><a href="#gef的安装" class="headerlink" title="gef的安装"></a>gef的安装</h1><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gitee.com/nobugs404/imgbed/raw/master//blog/image-20220210153453680.png"
+                      alt="image-20220210153453680"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gitee.com/nobugs404/imgbed/raw/master//blog/image-20220210153549199.png"
+                      alt="image-20220210153549199"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gitee.com/nobugs404/imgbed/raw/master//blog/image-20220210153658743.png"
+                      alt="image-20220210153658743"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gitee.com/nobugs404/imgbed/raw/master//blog/image-20220210153720109.png"
+                      alt="image-20220210153720109"
+                ></p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gitee.com/nobugs404/imgbed/raw/master//blog/image-20220210153749722.png"
+                      alt="image-20220210153749722"
+                ></p>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2024/12/19/%5BCTFHub%5DRe2Shellcode/</url>
+    <content><![CDATA[<h1 id="CTFHub-Re2Shellcode"><a href="#CTFHub-Re2Shellcode" class="headerlink" title="[CTFHub]Re2Shellcode"></a>[CTFHub]Re2Shellcode</h1><h2 id="查看程序保护机制"><a href="#查看程序保护机制" class="headerlink" title="查看程序保护机制"></a>查看程序保护机制</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gitee.com/nobugs404/imgbed/raw/master//blog/image-20220223004540659.png"
+                      alt="image-20220223004540659"
+                ></p>
+<h2 id="分析程序流程"><a href="#分析程序流程" class="headerlink" title="分析程序流程"></a>分析程序流程</h2><p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gitee.com/nobugs404/imgbed/raw/master//blog/image-20220223004839148.png"
+                      alt="image-20220223004839148"
+                ></p>
+<p>输出中包含一个地址,然后让我们输入something,反汇编看一下:</p>
+<p><img  
+                     lazyload
+                     src="/images/loading.svg"
+                     data-src="https://gitee.com/nobugs404/imgbed/raw/master//blog/image-20220223010610944.png"
+                      alt="image-20220223010610944"
+                ></p>
+<p>先来看下运行时输出的地址是什么,首先找到是40065c处的printf输出了地址</p>
+<p>看下传进去的参数:rdi寄存器存的是<code>%rip+0xe2</code>指向存 <code>&quot;What is it : [%p] ?\n&quot;</code>这个字符串的地址, rsi寄存器存的是</p>
+<h2 id="Pwn思路"><a href="#Pwn思路" class="headerlink" title="Pwn思路"></a>Pwn思路</h2><h2 id="payload"><a href="#payload" class="headerlink" title="payload"></a>payload</h2><p>![image-20220302210254334](&#x2F;Users&#x2F;thou&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20220302210254334.png)</p>
+]]></content>
   </entry>
 </search>
