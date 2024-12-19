@@ -4237,9 +4237,9 @@ Markup: --------------- (below H2 text)
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2024/12/19/gef%E7%9A%84%E5%AE%89%E8%A3%85/</url>
-    <content><![CDATA[<h1 id="gef的安装"><a href="#gef的安装" class="headerlink" title="gef的安装"></a>gef的安装</h1><p><img  
+    <title>gef的安装</title>
+    <url>/2021/09/09/gef%E7%9A%84%E5%AE%89%E8%A3%85/</url>
+    <content><![CDATA[<p><img  
                      lazyload
                      src="/images/loading.svg"
                      data-src="https://gitee.com/nobugs404/imgbed/raw/master//blog/image-20220210153453680.png"
@@ -4270,11 +4270,19 @@ Markup: --------------- (below H2 text)
                       alt="image-20220210153749722"
                 ></p>
 ]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>CTF</tag>
+        <tag>工具</tag>
+        <tag>调试</tag>
+      </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2024/12/19/%5BCTFHub%5DRe2Shellcode/</url>
-    <content><![CDATA[<h1 id="CTFHub-Re2Shellcode"><a href="#CTFHub-Re2Shellcode" class="headerlink" title="[CTFHub]Re2Shellcode"></a>[CTFHub]Re2Shellcode</h1><h2 id="查看程序保护机制"><a href="#查看程序保护机制" class="headerlink" title="查看程序保护机制"></a>查看程序保护机制</h2><p><img  
+    <title>[CTFHub]Re2Shellcode</title>
+    <url>/2021/09/09/%5BCTFHub%5DRe2Shellcode/</url>
+    <content><![CDATA[<h2 id="查看程序保护机制"><a href="#查看程序保护机制" class="headerlink" title="查看程序保护机制"></a>查看程序保护机制</h2><p><img  
                      lazyload
                      src="/images/loading.svg"
                      data-src="https://gitee.com/nobugs404/imgbed/raw/master//blog/image-20220223004540659.png"
@@ -4297,5 +4305,14 @@ Markup: --------------- (below H2 text)
 <p>看下传进去的参数:rdi寄存器存的是<code>%rip+0xe2</code>指向存 <code>&quot;What is it : [%p] ?\n&quot;</code>这个字符串的地址, rsi寄存器存的是</p>
 <h2 id="Pwn思路"><a href="#Pwn思路" class="headerlink" title="Pwn思路"></a>Pwn思路</h2><h2 id="payload"><a href="#payload" class="headerlink" title="payload"></a>payload</h2><p>![image-20220302210254334](&#x2F;Users&#x2F;thou&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20220302210254334.png)</p>
 ]]></content>
+      <categories>
+        <category>CTF</category>
+      </categories>
+      <tags>
+        <tag>CTF</tag>
+        <tag>Writeup</tag>
+        <tag>CTFHub</tag>
+        <tag>Re2Shellcode</tag>
+      </tags>
   </entry>
 </search>
