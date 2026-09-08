@@ -7,6 +7,7 @@ tags:
   - Ubuntu
   - 个性化
 draft:
+description: "Ubuntu 22.10 与 GNOME 桌面折腾记录，整理扩展、软件兼容、终端、动态壁纸及鼠标按键配置。"
 ---
 
 狂推[Arch Wiki](https://wiki.archlinuxcn.org/)

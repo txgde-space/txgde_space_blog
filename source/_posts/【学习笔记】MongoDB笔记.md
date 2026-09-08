@@ -7,6 +7,7 @@ categories:
 tags:
   - MongoDB
   - 数据库
+description: "MongoDB 常用操作笔记，整理 macOS 服务启停、数据库用户创建以及数据库、集合和数据查询命令。"
 ---
 
 ## MacOS 命令

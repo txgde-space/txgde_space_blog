@@ -11,6 +11,7 @@ tags:
 categories:
   - 学习笔记
   - 研究生
+description: "记录在 Ubuntu 18.04 Docker 容器中安装 ns-3 与 Aqua-Sim Third Generation 的依赖准备、安装和编译步骤。"
 ---
 ## 1 、拉取 Docker 镜像
 推荐使用 Ubuntu:18.04 的镜像

@@ -8,7 +8,8 @@
     "server": "node tools/hexo.cjs server",
     "new": "node tools/hexo.cjs new",
     "test": "node --test test/*.test.cjs",
-    "check": "npm test && npm run build && node tools/check-site.cjs"
+    "check": "npm test && npm run build && node tools/check-site.cjs",
+    "audit:images": "node tools/audit-images.cjs"
   },
   "hexo": {
     "version": "8.1.2"
@@ -18,6 +19,7 @@
     "hexo": "8.1.2",
     "hexo-generator-archive": "2.0.0",
     "hexo-generator-category": "2.0.0",
+    "hexo-generator-feed": "4.0.0",
     "hexo-generator-index": "4.0.0",
     "hexo-generator-searchdb": "1.5.0",
     "hexo-generator-tag": "2.0.0",

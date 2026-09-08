@@ -4,6 +4,7 @@ date: '2021-09-18 16:36:06'
 draft: false
 categories: ['CTF']
 tags: ['CTF', 'CTFHub', 'Easy', 'Web', 'Writeup']
+description: "CTFHub Cookie 练习记录，观察浏览器中的 Cookie 字段，理解客户端状态与身份判断的关系。"
 ---
 
 ## 题目来源

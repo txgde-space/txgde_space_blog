@@ -28,7 +28,7 @@ npm run check
 
 ## 检查与升级
 
-`npm run check` 执行摘要回归测试、干净构建和产物检查，包括 26 条旧文章链接、分页、搜索索引、代码块、规范链接和全部生成页面的站内链接及资源。`public/` 和 `db.json` 是生成文件，不提交。
+`npm run check` 执行摘要、统计域名隔离、搜索延迟加载回归测试，以及干净构建和产物检查，包括 26 条旧文章链接、分页、搜索索引、分享描述、RSS、代码块、规范链接和全部生成页面的站内链接及资源。`public/` 和 `db.json` 是生成文件，不提交。
 
 GitHub Actions 在推送和 PR 时执行同样的检查；Dependabot 按月提出 npm 与 Actions 升级。要让 Dependabot 生效，源码分支需要设为 GitHub 默认分支，或将其配置同步到默认分支。
 
@@ -43,9 +43,9 @@ npm run check
 
 ## Vercel 部署
 
-远端仓库是 <https://github.com/txgde-space/txgde_space_blog>。截至本次维护，`main` 存放生成的 HTML，最新提交为 `e9dec67cbd797252808c4676c4f1917cb3123143`，并非 Hexo 源码。维护后的源码使用独立的 `source` 分支，保留原 `main` 历史；推送源码不会自动完成生产站点的分支切换。
+远端仓库是 <https://github.com/txgde-space/txgde_space_blog>。`main` 保留迁移前的静态 HTML 历史，维护后的源码使用 `source` 分支。Vercel 的 Production Branch 已切换为 `source`，正式域名仍是 `blog.txgde.space`；推送 `source` 会自动触发生产构建和部署。
 
-推荐把 `source` 作为长期维护分支，让 Vercel 构建源码：
+重建或迁移 Vercel 项目时，按以下配置恢复：
 
 1. 提交当前源码，推送 `source` 分支。保留原 `main`，不需要强制推送。
 2. 在现有 Vercel 项目对 `source` 创建 Preview，Root Directory 设置为仓库根目录。
@@ -64,3 +64,15 @@ npm run check
 头像已保存在 `source/images/avatar.svg`，主题 JS/CSS/字体由本站提供，减少对第三方主题 CDN 的依赖。历史文章图片继续使用原图床，已将该图床的 HTTP 引用改为 HTTPS；图床和访问统计仍属于外部服务。
 
 更多变更和验证记录见 [维护记录](docs/maintenance-2026-09.md)。
+
+## 搜索、统计与订阅
+
+搜索索引在首次打开搜索弹窗时加载，同一页面会话中缓存；支持在下载过程中先输入关键词，下载完成后自动显示结果。失败时关闭弹窗再打开即可重试。`lib/search-module.cjs` 在构建时适配主题源码，主题升级改变对应代码时会明确报错，需复核适配逻辑。
+
+访问统计仅在浏览器地址为 `https://blog.txgde.space` 时加载，其他域名、localhost、127.0.0.1 和 Vercel 预览地址都不请求计数服务。统计标签默认隐藏，获取数字后显示；使用运行时域名判断，因此 Vercel 的同一产物晋升生产后也能正常计数。迁移正式域名时需同步 `source/js/site-counter.js` 与对应测试。
+
+26 篇文章已补齐 `description`，用于页面描述、分享摘要与 RSS。RSS 地址为 `/rss.xml`，包含全部已发布文章的摘要及永久链接，导航栏可直接订阅。由官方 `hexo-generator-feed` 生成，浏览器与阅读器可通过页面的自动发现标签识别。
+
+字体保留本地 WOFF2 与 `font-display: swap`，删除无用的 Google Fonts 预连接；Moment 全语言包仅在含说说日期的页面加载。首页首次访问不再主动下载约 208 KiB 的搜索索引和 366 KiB 的 Moment 文件（均为未压缩体积，不代表实际传输量或首屏测速）。未启用的 Mermaid 等资源虽然在构建目录中，但不属于首页加载资源。
+
+图片检查详情见 [图片维护清单](docs/image-audit-2026-09.md)。执行 `npm run build` 后可用 `npm run audit:images` 复查所有外部图片响应，不把外部网络检查放入部署必过项。

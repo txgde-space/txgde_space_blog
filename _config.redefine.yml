@@ -10,11 +10,13 @@ defaults:
   favicon: /images/avatar.svg
   avatar: /images/avatar.svg
 global:
+  website_counter:
+    url: /js/site-counter.js
   hover:
     scale: true
   open_graph:
     image: /images/wallhaven-wqery6-light.webp
-    description: Thou 的技术博客，记录编程、计算机系统、网络模拟与日常折腾。
+    description: '' # 文章使用自己的 description，其他页面回退到站点描述。
 home_banner:
   title: Welcome to Thouの空间
   subtitle:
@@ -31,6 +33,9 @@ home_banner:
     qrs: []
 navbar:
   links:
+    RSS:
+      path: /rss.xml
+      icon: fa-regular fa-rss
     Archives:
       path: /archives/
       icon: fa-regular fa-archive
@@ -47,7 +52,7 @@ navbar:
         Github: https://github.com/txgde-space
   search:
     enable: true
-    preload: true
+    preload: false
 home:
   sidebar:
     announcement: 好累😭
@@ -82,6 +87,9 @@ articles:
     min2read: true
 cdn:
   enable: false
+plugins:
+  feed:
+    enable: true
 inject:
   enable: true
   head:

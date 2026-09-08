@@ -4,6 +4,7 @@ date: '2022-02-10 12:40:36'
 draft: false
 categories: ['Linux']
 tags: ['clash', 'kali', 'linux', 'pip代理', '代理', '未分类', '浏览器代理']
+description: "记录 Linux 主机与虚拟机使用代理的方法，包括获取 Clash 代理地址、终端环境与常用工具配置。"
 ---
 
 有代理的需求的时候，Windows和Mac系统还好，Linux会有些麻烦。每次在网上搜就会浪费很多时间,因此在此记录一下Linux系统下进行代理的方法。

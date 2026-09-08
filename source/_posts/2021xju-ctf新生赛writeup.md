@@ -16,6 +16,7 @@ tags:
   - XJUSEC
   - XJU新生赛
   - 比赛
+description: "2021 年 XJU CTF 新生赛解题记录，结合反汇编截图与脚本梳理题目分析和解题思路。"
 ---
 
 ## PWN

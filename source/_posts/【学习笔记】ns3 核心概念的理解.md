@@ -9,6 +9,7 @@ tags:
   - ns-3
   - 计算机网络
   - 网络模拟器
+description: "梳理 ns-3 中 Node、Net Device、Application、Channel 与 Helper 的含义及网络组件之间的关系。"
 ---
 **[官方文档](https://www.nsnam.org/docs)**
 ## 各网络组件对现实生活网络的抽象

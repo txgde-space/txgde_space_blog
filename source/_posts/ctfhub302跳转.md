@@ -4,6 +4,7 @@ date: '2021-09-13 16:05:49'
 draft: false
 categories: ['CTF']
 tags: ['CTF', 'CTFHub', 'Easy', 'Web', 'Writeup']
+description: "通过 CTFHub 的 302 跳转练习理解 HTTP 重定向，并使用 curl 查看浏览器跳转前的响应。"
 ---
 
 ## 题目来源

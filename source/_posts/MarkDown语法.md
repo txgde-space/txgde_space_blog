@@ -6,6 +6,7 @@ categories:
   - 学习笔记
 tags:
   - MarkDown
+description: "Markdown 语法速查表，收录标题、强调、链接、列表、表格、代码块等常用写法与效果示例。"
 ---
 
 Markdown Cheatsheet<a name="TOP"></a>

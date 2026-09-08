@@ -16,6 +16,7 @@ tags:
   - XJUSEC
   - XJU新生赛
   - 比赛
+description: "记录 2021 年 XJU 1024 CTF 挑战赛的解题过程，整理 PWN 等题目的程序分析、思路与脚本。"
 ---
 
 ## PWN

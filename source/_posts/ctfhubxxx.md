@@ -3,6 +3,7 @@ title: '[CTFHub]xxx'
 date: '2021-09-18 16:06:40'
 categories: ['CTF']
 draft: false
+description: "一篇尚未完成的 CTFHub 练习笔记，保留了 Cookie 基础概念与题目来源，解题过程待补充。"
 ---
 
 ## 题目来源

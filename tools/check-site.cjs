@@ -23,6 +23,26 @@ for (const { path: file, title } of legacyPosts) {
 }
 
 const sourcePosts = fs.readdirSync(path.join(__dirname, '../source/_posts')).filter(file => file.endsWith('.md'));
+const posts = JSON.parse(fs.readFileSync(path.join(__dirname, '../db.json'), 'utf8')).models.Post;
+for (const post of posts) {
+  assert.ok(post.description?.trim(), `Missing article description: ${post.source}`);
+  const $ = read(legacyPosts.find(item => item.title === post.title).path);
+  assert.equal($('meta[property="og:description"]').attr('content'), post.description, `Wrong share description: ${post.source}`);
+  assert.equal($('meta[name="description"]').attr('content'), post.description, `Wrong page description: ${post.source}`);
+}
+const feed = load(fs.readFileSync(path.join(root, 'rss.xml'), 'utf8'), { xml: true });
+assert.equal(feed('rss').attr('version'), '2.0');
+assert.equal(feed('item').length, sourcePosts.length, 'RSS must cover every published article');
+feed('item').each((_, item) => {
+  const link = feed(item).children('link').text();
+  const legacy = legacyPosts.find(post => decodeURIComponent(new URL(link).pathname) === '/' + post.path.replace(/index\.html$/, ''));
+  const post = posts.find(post => post.title === legacy?.title);
+  assert.ok(post, `Unknown RSS permalink: ${link}`);
+  assert.equal(feed(item).children('description').text(), post.description);
+});
+assert.equal(read('index.html')('link[rel="alternate"][type="application/rss+xml"]').attr('href'), '/rss.xml');
+assert.ok(read('index.html').html().includes('"preload":false'), 'Search should load only when requested');
+assert.ok(fs.readFileSync(path.join(root, 'js/build/tools/localSearch.js'), 'utf8').includes('if (input?.value.trim()) renderSearchResult(input);'), 'Lazy search must refresh a query entered during loading');
 const hiddenPreviews = new Set(JSON.parse(fs.readFileSync(path.join(__dirname, '../db.json'), 'utf8')).models.Post
   .filter(post => post.excerpt === 'false').map(post => post.title));
 assert.ok(!read('index.html').html().includes('you@example.com'), 'Theme example email leaked into site');
@@ -62,6 +82,13 @@ function walk(dir) {
     if (!file.endsWith('.html')) continue;
     pages++;
     const $ = load(fs.readFileSync(file, 'utf8'));
+    assert.equal($('script[src*="vercount.one"]').length, 0, 'Counter must use the origin-checked loader');
+    assert.equal($('script[src="/js/site-counter.js"]').length, 1);
+    assert.ok($('script[src="/js/site-counter.js"]').is('[data-swup-reload-script]'), 'Counter must reload after Swup navigation');
+    $('[id^="busuanzi_container_"]').each((_, node) => {
+      assert.equal($(node).attr('style'), 'display: none !important;', 'Counter labels must start hidden');
+    });
+    if (!$('.essay-date').length) assert.equal($('script[src$="/moment-with-locales.min.js"]').length, 0);
     const base = new URL('/' + path.relative(root, file), site);
     $('a[href], link[href], script[src], img[src], img[data-src]').each((_, node) => {
       const element = $(node);

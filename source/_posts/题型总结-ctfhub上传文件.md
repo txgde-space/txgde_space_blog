@@ -4,6 +4,7 @@ date: '2021-10-05 21:20:05'
 draft: false
 categories: ['CTF']
 tags: ['.htaccess', 'CTF', 'CTFHub', 'PHP', '一句话木马', '前端验证', '文件上传', '无验证', '题型总结','Writeup']
+description: "结合 CTFHub 练习整理文件上传题型，记录无验证、前端校验与 .htaccess 等场景的原理和解题过程。"
 ---
 
 ###### 原理

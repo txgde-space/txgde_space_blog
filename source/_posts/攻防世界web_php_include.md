@@ -4,6 +4,7 @@ date: '2021-09-21 23:34:17'
 draft: false
 categories: ['CTF']
 tags: ['CTF', 'Medium', 'PHP', 'Web', 'Writeup', '攻防世界']
+description: "攻防世界 Web_php_include 题解，结合源码分析 PHP 文件包含、伪协议与字符串过滤的关系。"
 ---
 
 **题目来源:**

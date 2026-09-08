@@ -4,6 +4,7 @@ date: '2022-02-06 15:51:16'
 draft: false
 categories: ['CTF']
 tags: ['Bugku', 'Canary', 'CTF', 'Easy', 'Pwn', 'Writeup']
+description: "Bugku canary 练习记录，通过程序反汇编与栈布局分析理解 Canary 保护及题目中的绕过思路。"
 ---
 
 ## 查看程序保护机制

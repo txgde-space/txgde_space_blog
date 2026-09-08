@@ -4,6 +4,7 @@ date: '2021-09-09 09:09:57'
 draft: false
 categories: ['CTF']
 tags: ['CTFHub', 'CTF', 'Writeup', 'Re2Shellcode']
+description: "CTFHub Re2Shellcode 练习笔记，记录程序保护检查、地址输出分析及 Shellcode 相关解题思路。"
 ---
 
 ## 查看程序保护机制

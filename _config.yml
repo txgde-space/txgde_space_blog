@@ -107,3 +107,10 @@ search:
   field: post
   content: true
   format: striptags
+
+feed:
+  type: rss2
+  path: rss.xml
+  limit: 0 # 包含所有已发布文章
+  content: false # 摘要订阅，阅读全文回到原文
+  autodiscovery: true
