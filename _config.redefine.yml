@@ -81,6 +81,8 @@ footer:
     number: 豫ICP备20024242号-3
     url: https://beian.miit.gov.cn/
 articles:
+  author_label:
+    enable: false
   word_count:
     enable: true
     count: true
