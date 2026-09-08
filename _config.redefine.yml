@@ -1,0 +1,88 @@
+# Redefine 2.9.x：只维护站点覆盖项，其余设置继承 npm 主题默认值。
+# https://redefine-docs.ohevan.com/
+# 评论暂时关闭：原 Twikoo 地址已指向其他服务；确认新地址后再启用。
+info:
+  title: Thouの空间
+  subtitle: Let's Coding!!!
+  author: Thou
+  url: https://blog.txgde.space
+defaults:
+  favicon: /images/avatar.svg
+  avatar: /images/avatar.svg
+global:
+  hover:
+    scale: true
+  open_graph:
+    image: /images/wallhaven-wqery6-light.webp
+    description: Thou 的技术博客，记录编程、计算机系统、网络模拟与日常折腾。
+home_banner:
+  title: Welcome to Thouの空间
+  subtitle:
+    text:
+      - Coding coding coding!
+      - Let us code!
+  social_links:
+    enable: true
+    links:
+      - icon: github
+        url: https://github.com/txgde-space
+      - icon: email
+        url: tongxuguang23@icloud.com
+    qrs: []
+navbar:
+  links:
+    Archives:
+      path: /archives/
+      icon: fa-regular fa-archive
+    Tags:
+      path: /tags/
+      icon: fa-solid fa-tags
+    Categories:
+      path: /categories/
+      icon: fa-solid fa-folder
+    我的:
+      icon: fa-regular fa-user
+      submenus:
+        个人主页: https://i.txgde.space
+        Github: https://github.com/txgde-space
+  search:
+    enable: true
+    preload: true
+home:
+  sidebar:
+    announcement: 好累😭
+  excerpt_length: 200
+comment:
+  system: twikoo
+  config:
+    waline:
+      serverUrl: https://home.txgde.space:8360
+    twikoo:
+      server_url: https://home.txgde.space:30443
+    giscus:
+      lang: zh-CN
+  enable: false
+footer:
+  start: 2021/10/17 11:45:14
+  customize: >-
+    <a href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral" target="_blank"
+    rel="noopener noreferrer"><img id="upyun_logo" alt="又拍云" style="display:inline"
+    src="/images/upyun.svg"></a>
+
+    <br><a href="https://beian.mps.gov.cn/#/query/webSearch?code=41010302002807" target="_blank"
+    rel="noopener noreferrer">豫公网安备41010302002807号</a>
+  icp:
+    enable: true
+    number: 豫ICP备20024242号-3
+    url: https://beian.miit.gov.cn/
+articles:
+  word_count:
+    enable: true
+    count: true
+    min2read: true
+cdn:
+  enable: false
+inject:
+  enable: true
+  head:
+    - '<link rel="stylesheet" href="/css/custom.css">'

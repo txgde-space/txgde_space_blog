@@ -1,0 +1,26 @@
+/* Long technical names must wrap inside article cards and mobile headers. */
+.article-content-container,
+.article-title-regular,
+.article-title-cover {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.article-title-regular,
+.article-title-cover,
+.home-article-title {
+  overflow-wrap: anywhere;
+}
+
+.home-article-content,
+.home-article-content p {
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .article-title-regular {
+    font-size: 2rem;
+    line-height: 1.35;
+  }
+}
